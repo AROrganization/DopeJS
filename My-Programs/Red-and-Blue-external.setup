@@ -1,0 +1,111 @@
+/**
+    Red & Blue - Rewrite by Kaadmy
+
+    Game created by Inception And Red Vice
+    Level creator: https://www.khanacademy.org/computer-programming/redblue-level-creator/4667703065444352
+    Some concepts made by Ryan Kee 
+    
+    Due to the inefficient amount of code this game is loaded by Externals.
+**/
+var gameState = "Menu";
+var overButton;
+var v = color(255, 0, 0);
+var vb = color(0, 0, 255);
+var drawButton = function(buttonText, x, y, length, color, buttonHeight){
+    var val = v;
+    overButton = false;
+    noStroke();
+    fill(0, 0, 0, 100);
+    rect(x - 2, y + 2, length, buttonHeight + 1, 3);
+    if(mouseX >= x && mouseX <= x + length && mouseY >= y && mouseY <= y + buttonHeight){
+        val = vb;
+        overButton = true;
+    }
+    strokeWeight(3);
+    stroke(0, 0, 0);
+    fill(val);
+    rect(x, y, length, buttonHeight, 2);
+    textAlign(CENTER, CENTER);
+    fill(0, 0, 0);
+    textSize(30);
+    text(buttonText, x + length / 2, y + buttonHeight / 2);
+};
+var buttonPressed = false;
+
+var loadProgramPlease = function(src) {
+    var l1 = '<iframe src="https://www.khanacademy.org/computer-programming/red-blue-rewrite-dont-del/5260985754583040/embedded?editor=no&amp;author=no" style="width:410px;margin-left:-1px;margin-top:-1px;frameborder:0;height:410px;overflow:hidden;" scrolling="no" seamless></iframe>';
+    this.externals.canvas.parentNode.parentNode.innerHTML = l1;
+};
+
+var draw = function() {
+    if (gameState === "Menu") {
+        textFont(createFont("Comic Sans MS"));
+        background(209, 0, 0);
+        fill(0, 72, 255);
+        noStroke();
+        rect(0, 0, 200, 400);
+        textSize(60);
+
+        pushMatrix();
+        translate(100, 70);
+        rotate(-10);
+        pushMatrix();
+        scale(1.2);
+        fill(50, 50, 50);
+        text("Red", 0, 0);
+        popMatrix();
+        scale(1.4);
+        fill(255, 0, 0);
+        text("Red", 0, 0);
+        popMatrix();
+
+        pushMatrix();
+        translate(300, 50);
+        rotate(2);
+        pushMatrix();
+        scale(1.2);
+        fill(50, 50, 50);
+        text("Blue", 0, 0);
+        popMatrix();
+        scale(1.4);
+        fill(0, 255, 255);
+        text("Blue", 0, 0);
+        popMatrix();
+
+        fill(255, 255, 255);
+        text("&", width / 2, 98);
+
+        fill(255, 255, 255);
+        textSize(25);
+        text("Created by Indie and Kaadmy", 201, 360);
+        drawButton("Play", 127, 185, 150, 5, 50);
+        if (overButton && mouseIsPressed) {
+            gameState = "Play";
+        }
+        drawButton("Help", 127, 258, 150, 5, 50);
+        if (overButton && mouseIsPressed) {
+            gameState = "Help";
+        }
+    }
+    
+    if (gameState === "Play"){
+        loadProgramPlease();
+    }
+    
+    if (gameState === "Help"){
+        background(20, 180, 230);
+        fill(200, 50, 50);
+    
+        textSize(60);
+        text("Help", 200, 50);
+    
+        fill(70, 70, 70);
+        textSize(18);
+        text("Avoid touching red.\n\nTHIS IS NOT A RIP OFF of Cubix 2. Both\nprograms are different! Also, I gave credit\nto some people, check the top of code for\nmore info. ", 201, 200);
+        
+        drawButton("Back", 10, 350, 120, 5, 40);
+        if (overButton && mouseIsPressed) {
+            gameState = "Menu";
+        }
+    }
+};
