@@ -1,0 +1,25 @@
+// animations on KA
+
+scale(x, y);
+
+translate(x, y);
+
+rotate(x, y);
+
+var x, y;
+
+// copy and paste in draw function
+
+var time = 10;
+
+time ++;
+
+// ALL CODE BY INDIE. USE WELL
+
+sine * x, y
+
+cosine * x, y
+
+tan * x, y
+
+// FINISH FILE
