@@ -1,0 +1,40 @@
+// Vector graphs, free to use
+
+
+var gridS = 40; // DO NOT EDIT THIS
+var pS = 6; // Point Size
+var draw = function() {
+    background(207, 207, 207);
+    var i;
+    stroke(168, 168, 168);
+    for (i = 0; i < 20; i += 1) {
+        line(i * gridS, 0, i * gridS, 400);
+        line(0, i * gridS, 400, i * gridS);
+    }
+    stroke(0, 0, 0);
+    var pointX = round(mouseX / gridS) * gridS;
+    var pointY = round(mouseY / gridS) * gridS;
+    ellipse(pointX, pointY, pS, pS);
+    ellipse(mouseX, 200, 5, 1);
+    ellipse(mouseX, 200, 1, 5);
+    ellipse(200, mouseY, 1, 5);
+    ellipse(200, mouseY, 5, 1);
+    line(0, 200, 400, 200);
+    line(200, 0, 200, 400);
+    var cenAng = new PVector(200, 200);
+    var vectorP = new PVector(mouseX, mouseY);
+    var d = new PVector.sub(vectorP, cenAng);
+    line(cenAng.x, cenAng.y, vectorP.x, vectorP.y);
+    var theta = atan2(d.y, d.x);
+    var deg = -theta;
+    if (mouseX <= 200 && mouseY >= 200) {
+        deg = 360 - theta;
+    }
+    if (mouseX >= 200 && mouseY >= 200) {
+        deg = 360 - theta;
+    }
+    fill(10, 10, 10);
+    textFont(createFont("Chalkboard Bold"));
+    textSize(30);
+    text(floor(deg) + " deg", 10, 38);
+};
