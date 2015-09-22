@@ -1,0 +1,170 @@
+/**
+    Golos Logo Club - by Indie
+    
+ * Remarkable logos we have done:
+ * - https://www.khanacademy.org/computer-programming/shadow-ninja/6687527023017984
+ * - https://www.khanacademy.org/computer-programming/patrickz-logo/5051522104819712
+ * - https://www.khanacademy.org/computer-programming/infiltration-logo/5616587279302656
+ * - https://www.khanacademy.org/computer-programming/golden-vortex-logo-animation/5520333289029632
+
+    Created ?
+**/
+/* --- Button Variables --- */
+var gameState = "Menu";
+var overButton;
+var v = color(255, 255, 255, 100);
+var vb = color(255, 255, 255);
+var drawButton = function(buttonText, x, y, length, color, buttonHeight){
+    var val = v;
+    overButton = false;
+    noStroke();
+    fill(0, 0, 0, 100);
+    rect(x - 2, y + 2, length, buttonHeight + 1, 3);
+    if(mouseX >= x && mouseX <= x + length && mouseY >= y && mouseY <= y + buttonHeight){
+        val = vb;
+        overButton = true;
+    }
+    strokeWeight(3);
+    stroke(0, 0, 0);
+    fill(val);
+    rect(x, y, length, buttonHeight, 2);
+    textAlign(CENTER, CENTER);
+    fill(0, 0, 0);
+    textSize(30);
+    text(buttonText, x + length / 2, y + buttonHeight / 2);
+};
+var buttonPressed = false;
+
+var members = ["- Inception\n- The Chosen One\n - Replitaz \nVirus\n- FUSION BLAST\n- Nikola Tesla\n- Sidharth8"];
+
+var draw = function() {
+    if (gameState === "Menu") {
+        textFont(createFont("Comic Sans MS"));
+        var r = map(sin(millis() * 0.5), -1, 1, 0, 255);
+        var g = map(sin((millis() * 0.8) + 87), -1, 1, 100, 200);
+        var b = map(sin(millis() + 124), -1, 1, 255, 0);
+        background(r, g, b);
+        textSize(60);
+        
+        fill(255, 255, 255);
+        text("Golos Logos", 201, 52);
+
+        fill(255, 255, 255);
+        textSize(25);
+        text("Created by Indie ", 201, 360);
+        drawButton("About", 127, 101, 150, 5, 50);
+        if (overButton && mouseIsPressed) {
+            gameState = "About";
+        }
+        drawButton("Help", 127, 161, 150, 5, 50);
+        if (overButton && mouseIsPressed) {
+            gameState = "How To Join";
+        }
+        drawButton("Logos", 127, 220, 150, 5, 50);
+        if (overButton && mouseIsPressed) {
+            gameState = "Logos";
+        }
+        drawButton("Members", 127, 280, 150, 5, 50);
+        if (overButton && mouseIsPressed) {
+            gameState = "Members";
+        }
+    }
+    
+    if (gameState === "About"){
+        background(145, 145, 145);
+        colorMode(HSB);
+        var lineThickness = 3;
+        var spectrumValue = 0;
+        var rainbowIntensity = 200; // Gradient Opacity Value
+        strokeWeight(lineThickness);
+        for(var i = 400; i >= 0; i = i - lineThickness) {
+            stroke(spectrumValue, 255, 255, rainbowIntensity);
+            line(0, i, 400, i);
+            spectrumValue = map(i, 0, 400, 0, 255);
+            spectrumValue++;
+        }
+        colorMode(RGB);
+        textSize(50);
+        fill(255, 255, 255);
+        text("About", 201, 30);
+        textSize(15);
+        text("Golos was founded by The Chosen One and \nInception as a backup for Sogol. Since \nthere were so many requests for Sogol, \nTCO decided to make another club to hold \nall those requests.", 201, 124);
+        text("So what does Golos Corp really do? Well,\nwe design you logos! Simply ask in the Tips\nand Thanks, and we will start constructing\nyour logo!\n\nNOTE: If you aren't satisfied with your logo,\nsimply re-request again.",201,270);
+        drawButton("Back", 66, 355, 285, 18, 41);
+        if(overButton && mouseIsPressed) {
+            gameState = "Menu";
+        }
+    }
+    
+    if (gameState === "How To Join"){
+        background(166, 166, 166);
+        var startColor = color(0, 255, 255);
+        var endColor = color(0, 255, 50);
+        var lineWidth = 4;
+        strokeWeight(lineWidth);
+        for (var i = 0; i <= height; i += lineWidth){ 
+            stroke(lerpColor(startColor, endColor, i/height));
+            line(0, i, height, i);
+        }
+
+        textSize(50);
+        fill(255, 255, 255);
+        text("How To Join", 201, 30);
+        textSize(45);
+        fill(255, 0, 0);
+        pushMatrix();
+        rotate(13);
+        text("THIS CLUB\nIS CLOSED FOR\nA WHILE", 238, 149);
+        popMatrix();
+        drawButton("Back", 66, 355, 285, 18, 41);
+        if(overButton && mouseIsPressed) {
+            gameState = "Menu";
+        }
+    }
+    
+    if (gameState === "Logos"){
+        background(186, 186, 186);
+        var startColor = color(255, 0, 0);
+        var endColor = color(0, 255, 255);
+        var lineWidth = 4;
+        strokeWeight(lineWidth);
+        for (var i = 0; i <= height; i += lineWidth){ 
+            stroke(lerpColor(startColor, endColor, i/height));
+            line(0, i, height, i);
+        }
+        textSize(30);
+        fill(255, 255, 255);
+        text("Logos We've Made", 201, 30);
+        textSize(13);
+        text("- 1 Halo Proponent\n- Prince Pluto\n - Satisfied Soul \n- NLAB BLUE\n- Ethan\n- Winston\n- #1 Lindsey Stirling Proponent\n- Inception\n- Jonathon\n- Rosaline\n- ¥ɅƬƦіҠ ҎѦŧƐȴ\n- Cody Waterbane (In progress)\n- Ryan Wittmers \n- Evangelist Programming\n- Blayne The Sorcerer\n- Dogsix\n- Truman Harp",96,202);
+        text("- The Golden Vortex\n- Pekka\n- Blue Warp\n- ICE\n- Egg Logo\n- Womp20\n- Illuminati\n- Bentastico\n- Mazin\n- Tristan R\n-Patrick Z\n- Infiltration\n- Shadow Ninja\n- HTML Master",304,174);
+        drawButton("Back", 66, 355, 285, 18, 41);
+        if(overButton && mouseIsPressed) {
+            gameState = "Menu";
+        }
+    }
+    
+    if (gameState === "Members"){
+        background(186, 186, 186);
+        var startColor = color(204, 0, 0);
+        var endColor = color(0, 8, 153);
+        var lineWidth = 4;
+        strokeWeight(lineWidth);
+        for (var i = 0; i <= height; i += lineWidth){ 
+            stroke(lerpColor(startColor, endColor, i/height));
+            line(0, i, height, i);
+        }
+
+        textSize(50);
+        fill(255, 255, 255);
+        text("Members", 201, 30);
+        textSize(20);
+        for(var memberNum = 0; memberNum < members.length; memberNum++) {
+            text("" + members[memberNum], 201, 172+memberNum*30);
+        }
+        drawButton("Back", 66, 355, 285, 18, 41);
+        if(overButton && mouseIsPressed) {
+            gameState = "Menu";
+        }
+    }
+};
