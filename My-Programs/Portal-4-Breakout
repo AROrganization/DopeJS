@@ -1,0 +1,410 @@
+angleMode = "degrees";
+var Zapper = function(x, y, d, rot, moving, speed) {
+    this.x = x; this.y = y;
+    this.d = d;
+    this.xd = 1; this.yd = 0;
+    this.rot = rot;
+    this.moving = moving;
+    this.speed = speed;
+    this.x1 = 0; this.y1 = 0;
+    this.x2 = 0; this.y2 = 0;
+    this.generate = function(x) {
+        this.x = x;
+        this.y = floor(random(50, 350));
+        this.d = floor(random(30, 70));
+    };
+    this.draw = function() {
+        strokeWeight(4);
+        stroke(0, 255, 255);
+        this.yd = sin(this.rot);
+        this.xd = cos(this.rot);
+        if (this.moving) {
+            this.rot += this.speed;
+        }
+        this.x1 = this.x + this.xd * this.d;
+        this.y1 = this.y + this.yd * this.d;
+        this.x2 = this.x - this.xd * this.d;
+        this.y2 = this.y - this.yd * this.d;
+        pushMatrix();
+        translate(random(-3, 3), random(3, -3));
+        ellipse(this.x1, this.y1, 7, 7);
+        ellipse(this.x2, this.y2, 7, 7);
+        popMatrix();
+        line(this.x1, this.y1, this.x2, this.y2);
+        fill(255, 250, 255);
+        pushMatrix();
+        translate(random(-3, 3), random(3, -3));
+        noStroke();
+        ellipse(this.x1, this.y1, 7, 7);
+        ellipse(this.x2, this.y2, 7, 7);
+        popMatrix();
+    };
+    this.move = function(speed) {
+        this.x -= speed;
+        if (this.x < -75) {
+            this.x = 1500;
+            this.y = floor(random(50, 350));
+            this.d = floor(random(30, 70));
+        }
+    };
+};
+var coins = [
+    [
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1]
+    ],
+    [
+        [1, 1, 0, 0, 0, 1, 1],
+        [1, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1],
+
+    ],
+    [
+        [0, 1, 0, 0, 0, 1],
+        [1, 0, 1, 0, 1, 0, 1],
+        [0, 0, 0, 1],
+        [1, 0, 1, 0, 1, 0, 1],
+        [0, 1, 0, 0, 0, 1]
+    ],
+    [
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1]
+    ],
+    [
+        [0, 0, 1, 1, 0, 0, 0, 0, 1, 1],
+        [0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+        [1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1],
+        [1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1]
+    ],
+    [
+        [0, 1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+        [1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1],
+        [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+        [0, 1, 1, 1, 0, 0, 0, 1, 1, 1]
+    ],
+    [
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1]
+    ],
+    [
+        [0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1],
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
+        [1, 1, 0, 0, 0, 0, 1, 1]
+    ],
+    [
+        [0, 0, 0, 1, 1, 1],
+        [0, 0, 1, 0, 0, 0, 1],
+        [0, 1, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 1, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 1, 0, 0, 0, 1, 0, 1],
+        [0, 1, 0, 1, 1, 1, 0, 1],
+        [0, 0, 1, 0, 0, 0, 1],
+        [0, 0, 0, 1, 1, 1]
+    ],
+    [
+        [1, 0, 1, 0, 0, 1, 1, 0, 0, 1],
+        [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1],
+        [1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1],
+        [1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+        [0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1]
+    ]
+];
+var get_coins = function(c) {
+    var m = coins[floor(random(0, coins.length))];
+    var a = [];
+    for (var i in m) {
+        a.push([]);
+        for (var j in m[i]) {
+            a[i].push(m[i][j]);
+        }
+    }
+    return a;
+};
+var coin = function(x, y) {
+    this.x = x; this.y = y;
+    this.s = 20;
+    this.coins = 0;
+    this.map = get_coins();
+    this.generate = function() {
+        this.x = floor(random(650, 850));
+        this.map = get_coins(this);
+        this.y = floor(random(30, 270));
+    };
+    this.draw = function(p) {
+        for (var i in this.map) {
+            for (var j in this.map[i]) {
+                if (this.map[i][j] === 1) {
+                    noStroke();
+                    fill(255, 255, 0);
+                    ellipse(this.x + j * this.s, this.y + i * this.s, 14, 14);
+                    fill(200, 200, 100);
+                    ellipse(this.x + j * this.s, this.y + i * this.s, 11, 11);
+                    if (dist(p.x + 10, p.y + 15, this.x + j * this.s, this.y + i * this.s) < this.s / 2 + 13) {
+                        this.coins += p.multiplier;
+                        this.map[i][j] = 0;
+                    }
+                }
+
+            }
+        }
+    };
+    this.move = function(speed) {
+        this.x -= speed;
+        if (this.x < -250) {
+            this.x = floor(random(650, 850));
+            this.map = get_coins(this);
+            this.y = floor(random(30, 270));
+        }
+    };
+};
+var Player = function() {
+    this.x = 20;
+    this.y = 50;
+    this.velocity = 0;
+    this.speed = 1;
+    this.img = getImage("avatars/robot_male_2");
+    this.multiplier = 1;
+    this.generate = function(mult) {
+        this.x = 20;
+        this.y = 50;
+        this.velocity = 0;
+        this.speed = 1;
+        this.multiplier = mult;
+    };
+    this.draw = function() {
+        image(this.img, this.x - 3, this.y, 28, 30);
+        if (mouseIsPressed) {
+            this.velocity += 0.2;
+        } else {
+            this.velocity -= 0.2;
+        }
+        this.y -= this.velocity;
+        if (this.y <= 20) {
+            this.y = 20;
+            this.velocity = 0;
+        }
+        if (this.y >= 350) {
+            this.y = 350;
+            this.velocity = 0;
+        }
+        this.speed *= 1.0005;
+    };
+    this.lines = function(l1, l2) {
+        var s1 = (l1.y2 - l1.y1) / (l1.x2 - l1.x1);
+        var s2 = (l2.y2 - l2.y1) / (l2.x2 - l2.x1);
+    };
+    this.collision = function(x, y, r, x1, y1, x2, y2) {
+        x1 -= x;
+        x2 -= x;
+        y1 -= y;
+        y2 -= y;
+        var a = sq(x2 - x1) + sq(y2 - y1);
+        var b = 2 * (x1 * (x2 - x1) + y1 * (y2 - y1));
+        var c = sq(x1) + sq(y1) - sq(r);
+        var a = b * b - 4 * a * c;
+        x1 += x;
+        x2 += x;
+        y1 += y;
+        y2 += y;
+        if (a > 0 && dist(x, y, x1, y1) < dist(x1, y1, x2, y2) + r && dist(x, y, x2, y2) < dist(x1, y1, x2, y2) + r - 2) {
+            return true;
+        }
+        return false;
+    };
+};
+var alarm = function() {
+    this.x = floor(random(0, 600));
+    this.y = 0;
+    this.draw = function() {
+        fill(212, 212, 212);
+        quad(this.x - 30, this.y, this.x + 30, this.y, this.x + 14, this.y + 30, this.x - 14, this.y + 30);
+        colorMode(HSB);
+        var e = (sin(millis() * 0.15) * 12) + 12;
+        fill(e, 255, 255);
+        colorMode(RGB);
+        ellipse(this.x, this.y + 15, 14, 14);
+    };
+    this.move = function(speed) {
+        this.x -= speed;
+        if (this.x < -50) {
+            this.x = floor(random(500, 700));
+        }
+    };
+};
+var c = new coin(floor(random(200, 700)), floor(random(30, 270)));
+var p = new Player();
+var f = new alarm();
+var l = [];
+for (var i = 0; i < 15; i++) {
+    l.push(new Zapper(i * 100 + 250, floor(random(50, 350)), floor(random(30, 60)), floor(random(0, 180)), round(random()) === 0 ? true : false, floor(random(0, 4))));
+}
+var scroll = 0;
+var player_STATS = {
+    distance: 0, highscore: 0, last: 0, coins: 0,
+};
+var overButton;
+var gameState = "Menu";
+var colorOfButton = color(207, 207, 207, 100);
+var roundButton = function(x, y, radius, buttonText){
+    var color2 = 220;
+    overButton = false;
+    textAlign(CENTER, CENTER);
+    
+    if(dist(x, y, mouseX, mouseY) <= radius/2){
+        overButton = true;
+        colorOfButton = color(255, 255, 255);
+        if(mouseIsPressed){
+            x -= 2;
+            y += 2;
+        
+        }
+    } else {
+        overButton = false;
+        colorOfButton = color(207, 207, 207, 100);
+    }
+    strokeWeight(2);
+    stroke(255, 255, 255);
+    fill(colorOfButton);
+    ellipse(x, y, radius, radius);
+    fill(0, 0, 0);
+    textSize(33);
+    text(buttonText, x, y);
+};
+var backgroundForEachPage = function(){
+    background(207, 207, 207);
+    strokeWeight(2);
+    stroke(133, 133, 133);
+    for(var i = 0; i < 400; i += 70){
+        for(var j = 0; j < 400; j += 70){
+            line(-10 + i, 0, -10 + i, 400);
+            line(0,-10 + j, 400,-10 + j);
+        }
+    }
+    fill(219, 219, 219);
+    noStroke();
+    for(var i = 0; i < 400; i += 70){
+        for(var j = 0; j < 400; j += 70){
+            rect(j, i, 49, 49);
+        }        
+    }
+};
+var draw = function() {
+    if(gameState === "Menu"){
+        textFont(createFont("Chalkboard Bold"));
+        backgroundForEachPage();
+        fill(255, 255, 255);
+        textSize(91);
+        text("P   rtal 4",201,58);
+        resetMatrix();
+        textSize(30);
+        text("Breakout",303,116);
+        stroke(0, 200, 200);
+        pushMatrix();
+        rotate(13);
+        textSize(100);
+        noFill();
+        ellipse(133,32,60,74);
+        popMatrix();
+        roundButton(80, 308, 130, "Help");
+        if(overButton && mouseIsPressed){
+            gameState = "Help";
+        }
+        roundButton(199, 200, 139, "Play");
+        if(overButton && mouseIsPressed){
+            gameState = "Play";
+        }
+        stroke(0);
+        scale(0.4);
+        rotate(26);
+        translate(777, 219);
+        fill(0);
+        rect(197,167,250,63,20);
+        fill(0, 200, 200);
+        rect(196,156,251,41);
+        fill(0);
+        rect(169,139,70,90,2329);
+        rect(115,151,60,71,9);
+        fill(217, 217, 217);
+        strokeWeight(5);
+        ellipse(372,183,209,133);
+        ellipse(202,233,118,68);
+        line(145,156,104,122);
+        line(101,123,51,153);
+        line(95,265,180,230);
+        line(95,266,49,233);
+        textSize(125);
+        fill(120, 120, 120);
+        text("P",377,190);
+        resetMatrix();
+        
+    }
+    if (gameState === "Play") {
+        backgroundForEachPage();
+        frameRate(50);
+        scroll -= p.speed;
+        textSize(21);
+        pushMatrix();
+        translate(200, 200);
+        rotate(90);
+        popMatrix();
+        pushMatrix();
+        translate(0, -1);
+        popMatrix();
+        var w = 56 + str(round(-scroll)).length * 7;
+        fill(255, 255, 255);
+        textAlign(TOP, LEFT);
+        text("Coins: " + c.coins, 28, 31);
+        textAlign(CENTER, CENTER);
+        text("Distance: " + round((-scroll)), 292, 24);
+        for (var i in l) {
+            l[i].draw();
+            l[i].move(p.speed);
+            if (p.collision(p.x + 10, p.y + 15, 15, l[i].x1, l[i].y1, l[i].x2, l[i].y2)) {
+                p.distance = -scroll;
+                player_STATS.distance += p.distance;
+                scroll = 0;
+                if (player_STATS.highscore < c.coins * p.distance) {
+                    player_STATS.highscore = c.coins * p.distance;
+                }
+                player_STATS.multiplier = p.multiplier;
+                player_STATS.coins += c.coins;
+                player_STATS.last = c.coins * p.distance;
+                c.coins = 0;
+                p.generate(player_STATS.multiplier);
+                c.generate();
+                f = new alarm();
+                for (var i in l) {
+                    l[i].generate(i * 100 + 250);
+                }
+            }
+        }
+        c.draw(p);
+        c.move(p.speed);
+        f.draw();
+        f.move(p.speed);
+        p.draw();
+    }
+    if(gameState === "Help"){
+        backgroundForEachPage();
+        textSize(100);
+        fill(255, 255, 255);
+        text("Help",201,50);
+        textSize(20);
+        text("After Portal 3 and escaping the Apeture\nScience Labs, you find out there is a\nhuge obstacle course GLaDoS has put\nfor you. Escape, making it out without\ncolliding into any of the electric lasers.\nGood Luck! You'll need it.",201,182);
+        roundButton(331, 323, 130, "Menu");
+        if(overButton && mouseIsPressed){
+            gameState = "Menu";
+        }
+    }
+};
