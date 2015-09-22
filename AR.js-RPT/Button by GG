@@ -1,0 +1,64 @@
+// Button created by DillingerLee
+
+// Code by Gigabyte Giant
+var area = "main";
+var over_button;
+  
+//Everything past this point to the next comment is required to make a button.
+var drawButton = function(button_text, x, y, length, color) {
+    var button_height = 22;
+    
+    over_button = false;
+    var outline = color;
+    var greyV = 185;
+    var greyVB = 220;
+    var Val = greyV;
+    
+    strokeWeight(1);
+    stroke(0, 0, 0, 100);
+    fill(outline);
+    rect(x-2, y+2, length, button_height, 3);
+    // Checks if mouse cursor is inside of the button, if so, we set over_button to true
+    if (mouseX >= x && mouseX <= x + length && mouseY >= y && mouseY <= y + button_height)     {
+        Val = greyVB;
+        over_button = true;
+        // Now it checks to see if the mouse was pressed while inside of the button.
+        if (mouseIsPressed) {
+            x -=2;
+            y += 2;
+        }
+    }
+
+    strokeWeight(2);
+    stroke (outline);
+    fill(Val, Val, Val);
+    rect(x, y, length, button_height, 2);
+    
+    textAlign(CENTER, CENTER);
+    fill (0, 102, 19);
+    textSize(12);
+    text (button_text, x + length/2, y + button_height/2);
+    textAlign(LEFT, 0);
+};
+var draw = function(s) {
+  background(88, 201, 118);
+  textSize(40);
+  text("Click the button", 70, 41);
+  drawButton("Test Page 2", 159, 340, 85);
+  // Now if the mouse if over the button, and we press the mouse, it will execute code.
+  if(mouseIsPressed && over_button){
+      // I have it switching pages, however, you can do whatever in here.
+      area = "testpage2";
+  }
+  //Inside the if statement after the drawButton code directly above is where you can change it to do anything.
+  if(area === "testpage2"){
+    background(255, 0, 0);
+    textSize(40);
+    text("Nice!", 150, 200);
+    //this will exit page 2
+    drawButton("Back", 240, 340, 85);
+    if(over_button && mouseIsPressed){
+      area = "Main";
+    }
+  }
+};
