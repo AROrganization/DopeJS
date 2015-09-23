@@ -1,0 +1,857 @@
+// coderman64 and IndieKA
+
+
+frameRate(33);
+noCursor();
+
+var f1 = createFont("sans serif");
+textFont(f1,22);
+
+var walking = false;
+
+var macMode = false;//mode designed for a 1-button mouse
+
+var curBlock = 1;//current selected block
+if(macMode === true){
+    curBlock = 0;
+}
+
+var sc1 = 3;//scale
+
+var keys = [];
+
+var slev = 19;//sealevel(for world engine)
+
+var version = "0.1.4";
+
+//charater variables
+var charloc = [16*50+5,16*(slev-2)]; //location
+var feet = 0; //collision variables
+var frn = 0;
+var bck = 0;
+var top = 0;
+var bftop = [];
+var dir = 1; //facing direction ( 1:foreward, -1:backward)
+
+var clouds = [0,0,0]; //stores cloud location and scale: [x,y,s]
+
+var life = 8; //set life
+var air = 8; //set air
+
+var time = 40; //starting time
+var stars = []; //stores star locations
+var night = false; //tells day from night
+
+//generate stars
+for(var i = 0;i<200;i++){
+    stars[i] = random(0,400);
+}
+
+//--WORLD ENGINES--
+
+//make the world
+var worldSpawn = function(www,sl,width,height){
+    for(var b = 0;b<height;b++){
+        www[b] = [];
+        for(var n = 0;n<width;n++){
+            if(b === sl){
+                //ponds and grass
+                if(min(random(-3,2),1) === 1 & www[b-1][n] !== 3 & (n > 53|n<50)){
+                    www[b][n]=5;
+                    www[b][n-1]=5;
+                    www[b][n-2]=5;
+                }else{
+                    www[b][n] = 1;
+                }
+            }else{
+            if(b === sl-1 & n !== 50){
+                //trees
+                if(1 === min(random(-5,2),1)){
+                    www[b][n] = 3;
+                    www[b-1][n] = 3;
+                    www[b-2][n] = 4;
+                    www[b-2][n-1] = 4;
+                    www[b-2][n+1] = 4;
+                    www[b-3][n] = 4;
+                }else{
+                    www[b][n] = 0;
+                }
+            }else{if(n > sl+1){
+                //rock (underground)
+                www[b][n] = 2;
+            }else{if(b > sl){
+                //dirt
+                www[b][n] = 6;
+            }else{
+                //air
+                www[b][n] = 0;
+            }}}}
+            
+        }
+        www[floor(charloc[1]/16)][floor(charloc[0]/16)] = 0;
+    }
+    return www;
+    
+};
+var sl = 0;
+var worldNoise = function(www,w,h){
+    for(var i = 0;i<h;i++){
+        www[i] = [];
+        for(var b = 0;b<w;b++){
+        }
+    }
+    for(var i = 0;i<w;i++){
+        www[sl][i] = 1;
+        sl = round(noise(i*0.02)*h);
+        for(var n = 0; n < h ; n++){
+            if(www[n][i] !== 4){
+                www[n][i] = 0;
+            }
+            if(n>sl){
+                www[n][i] = 2;
+            }
+            if(sl<=slev+1){
+                www[sl][i] = 1;
+            }
+            if(n>slev){
+                if(www[n][i] === 0){
+                    www[n][i] = 5;
+                }
+            }
+            if(n-1 > 0){
+                if((www[n-1][i] === 5 || www[n-1][i] === 1)&&(www[n][i] !== 5)){
+                    www[n-1][i] = 6;
+                    www[n][i]=6;
+                }
+            }
+        }
+        if(min(random(1,7),5) === 5 && sl<slev){
+            www[sl-1][i] = 3;
+            www[sl-2][i] = 3;
+            www[sl-3][i-1] = 4;
+            www[sl-3][i+1] = 4;
+            www[sl-3][i] = 4;
+            www[sl-4][i] = 4;
+        }
+    }
+    return www;
+};
+//--SET WORLD VARIABLES--
+//the arrays commented out was the old default world used for testing...
+var craft1 = [];//[0,0,4,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0];
+var craft2 = [];//[0,4,4,4,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4];
+var craft3 = [];//[0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0];
+var craft4 = [];//[0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0];
+var craft5 = [];//[1,1,1,1,5,5,5,1,1,1,1,1,1,5,5,5,1,1,5,5,5,1,1,1,1];
+var craft6 = [];//[6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6];
+var craft7 = [];//[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2];
+var craft8 = [];//[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2];
+var craft9 = [];//[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2];
+var craft10 = [];//[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2];
+var world = [];
+
+//animations
+var anim = 0;
+
+//mouse location variables
+var bobx = 0;
+var boby = 0;
+
+//disable outlines
+noStroke();
+
+//use the world engine to create a new world
+//world = worldSpawn(world,slev,100,40); -original world generator
+world = worldNoise(world,100,40); //-Noise-based world generator (using 'noise();')
+var backo = [];
+for(var i = 0;i<world.length;i++){
+    backo[i] = [];
+    for(var b = 0;b<world[i].length;b++){
+        if(world[i][b] === 2){
+            backo[i][b] = true;
+        }
+    }
+}
+
+//--DETECTING WORLD BOUNDRIES--
+
+var inWorld = function(x,y){
+    if(y/16 > world.length |  y < 0){
+        return false;
+    }else{if(x/16 > world[slev].length | x < 0){
+        return false;
+    }else{
+        return true;
+    }}
+};
+
+//--MOUSE CONTROLS--
+
+var cont = function(){
+    //boby and bobx are the x and y co-ordinates of the mouse, which are changed here for eaiser interaction with the block storage system
+    bobx = pmouseX/16/sc1+charloc[0]/16-12.6/sc1;
+    boby = pmouseY/16/sc1+charloc[1]/16-9.5/sc1;
+    bobx = floor(bobx);
+    boby = floor(boby);
+    fill(255, 255, 255,50);
+    if(inWorld(bobx,boby)){
+        if(world[boby][bobx] !== 0 && world[boby][bobx] !== 8){
+            //highlight a solid block
+            rect(bobx*16*sc1,boby*16*sc1,16*sc1,16*sc1);
+        }
+        if(world[boby][bobx] === 8){
+            //hightight a torch
+            rect(bobx*16*sc1+7*sc1,boby*16*sc1+6*sc1,2*sc1,10*sc1);
+        }
+    }
+    if(mouseIsPressed === true){
+        //mouse left and right button controls
+        if(mouseButton === LEFT){
+            if(inWorld(bobx,boby)){
+                if(macMode === true){
+                    world[boby][bobx] = curBlock;
+                }else{
+                    world[boby][bobx] = 0;
+                }
+            }
+        }
+        if(mouseButton === RIGHT){
+            if(inWorld(bobx,boby)){
+                world[boby][bobx] = curBlock;
+            }
+        }
+    }
+};
+
+//--KEYBOARD CONTROLS--
+
+var learn = false;
+var keyPressed = function(){
+    if(keyCode === 40 | keyCode === 83){
+        curBlock = curBlock+1;
+        learn = true;
+    }
+    if(curBlock === 10){
+        if(macMode === true){
+            curBlock = 0;
+        }else{
+            curBlock = 1;
+        }
+    }
+    keys[keyCode] = true;
+    //text(keyCode,0,400); -Used for testing
+};
+var keyReleased = function(){
+    keys[keyCode] = false;
+};
+
+//--CLOUDS--
+
+var newCloud = function(arr){
+    if(arr === null){
+        arr = [];
+    }
+    arr[3] = random(17,100);
+    arr[2] = random(16*sc1,100);
+    arr[1] = -arr[3];
+    return arr;
+};
+clouds = newCloud(clouds);
+var cloud = function(arr){
+    fill(255, 255, 255,205);
+    rect(arr[1],arr[2],arr[3],16);
+    rect(arr[1]+arr[3]/7,arr[2]-16,arr[3]-arr[3]/2,16);
+    fill(199, 199, 199,205);
+    rect(arr[1]+arr[3]-0.1*arr[3],arr[2],0.1*arr[3],16);
+    rect(arr[1]+arr[3]/1.8,arr[2]-16,0.1*arr[3],16);
+    arr[1] = arr[1]+2;
+    if(arr[1] > 400){
+        arr = newCloud(arr);
+        //rect(1,1,16,16);
+    }
+    //rect(1,1,16,16);
+    return arr;
+    
+};
+
+//--WEATHER--
+
+var raindrops = [[1],[1],[1]];
+var newDrop = function(arr){
+    arr = [];
+    arr = [random(0,1600*sc1),random(0,400)];
+    return arr;
+};
+for(var i = 0;i<2000;i++){
+    raindrops[i] = newDrop([]);
+}
+var rain = function(){
+    for(var g = 0; g < raindrops.length;g++){
+        fill(0, 0, 255, 100);
+        rect(raindrops[g][0],raindrops[g][1],2,8);
+        raindrops[g][1] += 10;
+        if(raindrops[g][1] > 400){
+            raindrops[g][1] = 0;
+        }
+    }
+};
+
+//--THE SUN--
+
+var sun = function(){
+    fill(247, 255, 0);
+    rect(200,(time*2)-150,100,100);
+};
+
+//--THE MOON and STARS--
+
+var moon = function(){
+    fill(212, 212, 212);
+    rect(200,(time*2)-650,100,100);
+    if(time>200){
+    for(var i = 0;i<200;i=i+2){
+        rect(stars[i],stars[i+1],1,1);
+    }}
+};
+
+//--water flow--
+
+var flow = function(){
+    for(var y = 0;y<world.length;y++){
+        for(var x = 0;x<world[y].length;x++){
+            if(world[y][x] === 5){
+                if(world[y+1][x] === 0 | world[y+1][x] === 5){
+                    world[y+1][x] = 5;
+                }else{if(world[y][x+1] === 0){
+                    world[y][x+1] = 5;
+                }
+                if(world[y][x-1] === 0){
+                    world[y][x-1] = 5;
+                }
+                }
+            }
+        }
+    }
+};
+
+//character draw function
+
+var char = function(x,y,back){
+    x = x*sc1;
+    y = y*sc1;
+    translate(x,y);
+    if(life<1){
+        rotate(-90*back);
+    }
+    pushMatrix();
+    translate(2*sc1,21*sc1);
+    rectMode(CENTER);
+    if(keyIsPressed === true){
+        if(walking === true){
+        if((anim > 0 & anim < 4)){
+        fill(2, 2, 196);
+        rotate(55);
+        rect(5.5*sc1,0,11*sc1,4*sc1);
+        rotate(-20);
+        
+        }else{if((anim > 8 & anim < 12)){
+            fill(0, 0, 143);
+        rotate(125);
+        rect(5.5*sc1,0,11*sc1,4*sc1);
+        rotate(-155);
+        }
+            rotate(0);
+        }}
+    }
+    fill(4, 0, 255);
+    rect(0,5.5*sc1,4*sc1,11*sc1);
+    rectMode(CORNER);
+    popMatrix();
+    fill(0, 200, 255);
+    rect(0,0,4*sc1,21*sc1);
+    pushMatrix();
+    //head
+    fill(255, 242, 161);
+    rect(-2*sc1,0,8*sc1,8*sc1);
+    fill(82, 52, 1);
+    rect(-2*sc1,0,8*sc1,2*sc1);
+    rect(1*sc1-2*sc1*(back*1.5),0,2*sc1,5*sc1);
+    popMatrix();
+    //arm
+    fill(255, 242, 161);
+    translate(2*sc1,10*sc1);
+    if(mouseIsPressed === true){
+        rotate(120*back);
+    }else{
+        rotate(180);
+    }
+    rectMode(CENTER);
+    rect(0,-5*sc1,4*sc1,10*sc1);
+    fill(0, 187, 255);
+    rect(0,0*sc1,4*sc1,4*sc1);
+    rectMode(CORNER);
+    resetMatrix();
+};
+
+//what happens when you run out of life
+//--DEATH SCREEN--
+
+var death = function(){
+    charloc[0] = -100;
+    fill(255, 0, 0,205);
+    rect(0,0,400,400);
+    fill(255, 255, 255);
+    textSize(32);
+    text("You Died!!!",120,100);
+    fill(130, 130, 130);
+    if(mouseX<250&mouseX>150){
+        if(mouseY>180&mouseY<210){
+            fill(189, 189, 189);
+            if(mouseIsPressed){
+                fill(255, 255, 255);
+                charloc[0] = 16*50;
+                charloc[1] = 16*(slev-3);
+                world[floor(slev-3)][50] = 0;
+                world[floor(slev-2)][50] = 0;
+                life = 8;
+            }
+        }
+    }
+    rect(150,180,100,30);
+    textSize(12);
+    fill(0, 0, 0);
+    text("Respawn",174,200);
+};
+//draw functions for blocks --BLOCK DRAW--
+
+var grass = function(x,y) {
+    fill(115, 86, 0);
+    rect(x*sc1,y*sc1,16*sc1,16*sc1);
+    fill(0, 115, 0);
+    rect(x*sc1,y*sc1,16*sc1,3*sc1);
+};
+var stone = function(x,y) {
+    fill(128, 128, 128);
+    rect(x*sc1,y*sc1,16*sc1,16*sc1);
+};
+var wood = function(x,y) {
+    fill(99, 83, 0);
+    rect(x*sc1,y*sc1,16*sc1,16*sc1);
+    fill(61, 34, 0);
+    rect(x*sc1,y*sc1,2*sc1,16*sc1);
+    rect((x+14)*sc1,y*sc1,2*sc1,16*sc1);
+};
+var leaves = function(x,y) {
+    fill(34, 255, 0);
+    rect(x*sc1,y*sc1,16*sc1,16*sc1);
+};
+var water = function(x,y) {
+    fill(0, 0, 255,90);
+    rect(x*sc1,y*sc1,16*sc1,16*sc1);
+    if(world[y/16+1][floor(x/16)] === 5){
+        fill(0, 251, 255);
+        rect(x*sc1,(y+anim)*sc1,16*sc1,1);
+    }
+};
+var dirt = function(x,y) {
+    fill(115, 86, 0);
+    rect(x*sc1,y*sc1,16*sc1,16*sc1);
+};
+var planks = function(x,y){
+    fill(209, 161, 2);
+    rect(x*sc1,y*sc1,16*sc1,16*sc1);
+    fill(122, 96, 0);
+    for(var i = 0; i< 16; i = i+4){
+        rect(x*sc1,(y+i)*sc1,16*sc1,1*sc1);
+    }
+};
+var torche = function(x,y){
+    fill(255, 145, 0,160-anim*11);
+    ellipse(x*sc1+8*sc1,y*sc1+(15-anim*1.5)/2*sc1,7-(anim/7)*sc1,4*sc1);
+    ellipse(x*sc1+8*sc1,y*sc1+(19-anim*1.5)/2*sc1,7-(anim/28)*sc1,4*sc1);
+    rectMode(CORNER);
+    fill(102, 73, 0);
+    rect(x*sc1+7*sc1,y*sc1+6*sc1,2*sc1,10*sc1);
+    fill(255, 238, 0);
+    rect(x*sc1+7*sc1,y*sc1+6*sc1,2*sc1,2*sc1);
+};
+var ladder = function(x,y){
+    fill(153, 99, 0);
+    rect(x*sc1,y*sc1,2*sc1,16*sc1);
+    rect(x*sc1+14*sc1,y*sc1,2*sc1,16*sc1);
+    for(var i = 0; i < 4;i++){
+        rect(x*sc1,y*sc1+i*4*sc1+1*sc1,16*sc1,2*sc1);
+    }
+};
+
+    //block assignments
+var block = function(x,y,type){
+    x = x*16;
+    y = y*16;
+    if(type === 1){
+        grass(x,y);
+    }
+    if(type === 2){
+        stone(x,y);
+    }
+    if(type === 3){
+        wood(x,y);
+    }
+    if(type === 4){
+        leaves(x,y);
+    }
+    if(type === 5){
+        water(x,y);
+    }
+    if(type === 6){
+        dirt(x,y);
+    }
+    if(type === 7){
+        planks(x,y);
+    }
+    if(type === 8){
+        torche(x,y);
+    }
+    if(type === 9){
+        ladder(x,y);
+    }
+};
+
+//block selector
+
+
+var blockSel = function(){
+    fill(115, 115, 115);
+    rect(0,0,width,16*sc1);
+    for(var i = 0;i < 10;i++){
+        block(i-curBlock,0,i);
+        if(i === 0){
+            noFill();
+            stroke(255, 0, 0);
+            rect((i-curBlock)*16*sc1,0,16*sc1-1,16*sc1-1);
+            line((i-curBlock)*16*sc1,0,(i-curBlock+1)*16*sc1,16*sc1);
+            line((i-curBlock+1)*16*sc1,0,(i-curBlock)*16*sc1,16*sc1);
+            noStroke();
+        }
+    }
+    fill(0, 0, 0,50);
+    rect(16*sc1,0,384,16*sc1);
+    fill(255, 255, 255,50);
+    rect(0,0,16*sc1,16*sc1);
+    fill(255, 255, 255);
+    if(learn === false){
+        text("Press down arrow to change blocks",16*sc1,12);
+    }
+};
+for(var i = 1; i<20;i++){
+    clouds[i] = newCloud([]);
+    clouds[i][1] = random(0,400);
+}
+
+    //---MAIN LOOP--
+    
+var game = function() {
+    //--SKY--
+    
+    if(time < 200){
+        background(0, 238, 255);
+        night = false;
+    }else{
+        background(0, 10, 61);
+        night = true;
+    }
+    if(time<-125 | (time>160&time<200)){
+        background(255, 132, 0);
+    }
+    if(time>575|(time>199&time<225)){
+        background(120, 114, 1);
+    }
+    if(night === false){
+        sun();
+    }else{
+        moon();
+    }
+    cloud(clouds[1]);
+    cloud(clouds[2]);
+    cloud(clouds[3]);
+    cloud(clouds[4]);
+    
+    
+    //--VIEW--
+    
+    translate(-charloc[0]*sc1+200,-charloc[1]*sc1+150);
+    
+    //--UNDERGROUND BACKGROUNDS--
+    
+    fill(92, 92, 92);
+    //rect(0,slev*16*sc1,world[1].length*16*sc1,200*sc1*world.length);
+    fill(71, 71, 71);
+    rect(0,(world.length)*16*sc1,world[1].length*16*sc1,400);
+    
+    //--DRAW BLOCKS--
+    
+    for(var i = 0;i<world[1].length;i++){
+        for(var c12 = 0;c12<world.length;c12++){
+            if(i>(charloc[0]/16)-10 & i < (charloc[0] / 16) + 10 & c12 < (charloc[1]/16)+10){
+                fill(0, 0, 0);
+                block(i,c12,world[c12][i]);
+                if(world[c12][i] !== 0 & night === true & (i*16)>(charloc[0]-200)&(i*16<charloc[0]+200)&c12*16<charloc[1]+200 & world[c12][i] !== 8){
+                    fill(0, 0, 0,100);
+                    rect(i*16*sc1,c12*16*sc1,16*sc1,16*sc1);
+            }
+            }
+        }
+    }
+    
+    cont();
+    
+    //--KEYBOARD CONTROLS--
+    walking = false;
+    if(keyIsPressed === true){
+        if((keys[39] === true || keys[68] === true) &(frn[0] === 0 | frn[0] === 5 | frn[0] === 8 | frn[0] === 9)&(bftop[1] === 0 | bftop[1] === 5 | bftop[1] === 8 | bftop[1] === 9)){
+        charloc[0] = charloc[0]+5/sc1;
+        dir = 1;
+        walking = true;
+    }if((keys[37] === true||keys[65] === true) & (bck === 0 | bck === 5 | bck === 8 | bck === 9)&(bftop[0] === 0 | bftop[0] === 5 | bftop[0] === 8 | bftop[0] === 9)){
+        charloc[0] = charloc[0]-(5/sc1);
+        dir = -1;
+        walking = true;
+    }if((keys[38] === true|keys[32] === true||keys[6] === true||keys[78] === true) & (feet !== 0 & feet !== 8) & (top === 0|top === 8|top === 9|top === 5)){
+        if(world[floor(charloc[1]/16+1)][floor(charloc[0]/16)] === 9 | world[floor(charloc[1]/16+1)][floor(charloc[0]/16)] === 5){
+            charloc[1] = charloc[1]-3*sc1;
+        }else{
+            charloc[1] = charloc[1]-9*sc1;
+        }
+    }
+    text(keyCode,0,0);
+    }
+    
+    
+    //animations
+    
+    anim++;
+    if(anim>16){
+        anim = 0;
+    }
+    //make torches glow
+    if(night === true){
+        for(var yo = 0;yo<40;yo++){
+            for(var xo = 0;xo<100;xo++){
+                if(world[yo][xo] === 8){
+                    fill(255, 221, 0,50);
+                    rect(xo*16*sc1-32*sc1,yo*16*sc1-32*sc1,80*sc1,80*sc1);
+                }
+            }
+        }
+    }
+    //--CHARACTER--
+    
+    //collision
+    if(inWorld(charloc[0],charloc[1]-1)&inWorld(charloc[0],charloc[1]+3)){
+        feet = world[floor(charloc[1]/16+2)][floor(charloc[0]/16)];
+        frn = [world[floor(charloc[1]/16+1.5)][floor(charloc[0]/16+0.5)],world[floor(charloc[1]/16+0.5)][floor(charloc[0]+0.5)]];
+        bck = world[floor(charloc[1]/16+1.5)][floor(charloc[0]/16-0.3)];
+        top = world[floor(charloc[1]/16-1)][floor(charloc[0]/16)];
+        bftop = [world[floor(charloc[1]/16)][floor(charloc[0]/16-0.3)],world[floor(charloc[1]/16)][floor(charloc[0]/16+0.5)]];
+        //gets hurt when drowning and if head is in a block
+        if(world[floor(charloc[1]/16)][floor(charloc[0]/16)] !== 0&anim === 16&world[floor(charloc[1]/16)][floor(charloc[0]/16)] !== 8&world[floor(charloc[1]/16)][floor(charloc[0]/16)] !== 9){
+            if(world[floor(charloc[1]/16)][floor(charloc[0]/16)] === 5){
+                air--;
+                if(air < 0){
+                    life--;
+                }
+            }else{
+            life--;
+            }
+        }else{
+            //reload air
+            if(anim === 16){
+                air = 8;
+            }
+        }
+    }else{
+        //kills character if outside world
+        life = -1;
+        death();
+    }
+    //call draw character
+    char(charloc[0],charloc[1],dir);
+    //character gravity
+    if(feet === 0 | feet === 5 | feet === 8 | feet === 9){
+        charloc[1]=charloc[1]+2;
+    }
+    
+    //--WATER FLOW--
+    
+    //call water flow every 16 frames
+    if(anim === 16){
+        flow();
+        time = time+1;
+    }
+
+    //reset the view
+    
+    resetMatrix();
+    
+    
+    //--Weather--
+    if(noise((time)*0.02) < 0.4){
+        //rain();
+    }
+    
+    //--HUD--
+    
+    //draw the block selector
+    blockSel();
+    //draw life
+    for(var i = 1;i <= life;i++){
+        image(getImage("space/healthheart"),16*i+i-16,16*sc1,16,16);
+    }
+    //draw air meter if air is depleated slightly
+    for(var i = 1;i <= air;i++){
+        if(air<8){
+            fill(173, 255, 241,100);
+            stroke(84, 141, 255);
+            ellipse(16*i+i+260,16*sc1+8,16,16);
+            //image(e,16*i+i+252,16*sc1,16,16);
+            noStroke();
+        }
+    }
+    //activates death screen if life is too low
+    if(life<1){
+        death();
+    }
+    //time
+    fill(255, 255, 255);
+    var strTime = "H:Ml".replace("H",floor(((time+200)*2)/100)).replace("M",(floor(time*2/10))-floor(time*2/100)*10).replace("l",floor(time*2)-floor(time*2/10)*10);
+    text("minecraft time: "+strTime,1,399);
+    //reset time if too high
+    if(time>600){
+        time = -200;
+    }
+    stroke(255, 255, 255,200);
+    line(mouseX,mouseY-8,mouseX,mouseY+8);
+    line(mouseX-8,mouseY,mouseX+8,mouseY);
+    noStroke();
+    if(mouseX > 205){
+        dir = 1;
+    }
+    if(mouseX < 205){
+        dir = -1;
+    }
+};
+
+var scr = "menu";
+var loc = 0;
+var spdloc = 0;
+
+var mouseIn = function(x,y,w,h){
+    if(mouseX>x&mouseY>y&mouseX<x+w&mouseY<y+h){
+        return true;
+    }else{
+        return false;
+    }
+};
+
+var menu = function(){
+        if(time < 200){
+        background(0, 238, 255);
+        night = false;
+    }else{
+        background(0, 10, 61);
+        night = true;
+    }
+    if(time<-125 | (time>160&time<200)){
+        background(255, 132, 0);
+    }
+    if(time>575|(time>199&time<225)){
+        background(120, 114, 1);
+    }
+    if(night === false){
+        sun();
+    }else{
+        moon();
+    }
+    cloud(clouds[1]);
+    cloud(clouds[2]);
+    cloud(clouds[3]);
+    cloud(clouds[4]);
+    translate(-floor(loc),0);
+    cursor();
+    this.cursor(ARROW);
+    for(var i = 0;i<20;i++){
+        block(i,7,2);
+        block(i,8,2);
+        if(i>15|(i<12&i>9)){
+            block(i,6,1);
+            block(i,7,6);
+        }else if(i>11){
+            block(i,6,5);
+            block(i,7,6);
+        }
+        if(i>5&i<10){
+            block(i,6,6);
+            block(i,5,1);
+        }
+        if(i<6){
+            block(i,6,2);
+            block(i,5,6);
+            block(i,4,1);
+        }
+        if(i>0&i<4){
+            block(i,1,4);
+        }
+    }
+    block(12,6,1);
+    block(2,3,3);
+    block(2,2,3);
+    block(2,0,4);
+    resetMatrix();
+    textAlign(CENTER,BOTTOM);
+    textSize(30);
+    fill(237, 237, 237);
+    text("MINECRAFT-LIKE WORLD",204,56);
+    textSize(30);
+    fill(222, 222, 222);
+    text("MINECRAFT-LIKE WORLD",202,53);
+    fill(143, 143, 143);
+    textSize(30);
+    text("MINECRAFT-LIKE WORLD",200,50);
+    textSize(12);
+    text("Version: "+version,300,60);
+    if(mouseIn(160,160,100,40)){
+        fill(143, 143, 143);
+        if(mouseIsPressed){
+            textAlign(LEFT,BOTTOM);
+            fill(255, 255, 255);
+            noCursor();
+            scr = "game";
+        }
+    }else{
+        fill(199, 199, 199);
+    }
+    rect(160,160,100,40);
+    fill(0, 0, 0);
+    text("Play",210,186);
+    if(loc<101){
+        spdloc += 0.01;
+    }
+    if(loc>450){
+        spdloc -= 0.01;
+    }
+    loc+=spdloc;
+};  
+
+var draw = function() {
+    switch(scr){
+        case "game":
+            game();
+            break;
+        case "menu":
+            menu();
+            break;
+    }
+    
+};
+
+//WOW-888 lines!
