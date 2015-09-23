@@ -1,0 +1,102 @@
+var ballY = 100; //The y position of the ball
+var ballX = 200; // The x position of the ball
+var ballJump = 12; //The distance that the ball jumps
+var ballFall = 5; //The speed at which the ball falls
+var ballS = 20; //The size of the ball
+var platformX = 200; //The x position of the platform
+var pink = 5; //The speed at which the platform travels
+var ballStop = 1; //The povar at which the ball will stop
+var condition = 0; //The condition that determines whether the ball can jump or not
+var page = 0; //The variable for switching between pages
+var xPos = -400; //The position of the first page
+var slideIn = 10; //The variable to make the elements on the first page slide in 
+var lives = 5; //The variable for the lives
+var ballSpeed = 5; //The speed at which the ball travels (at the end)
+var keys = [];
+var keyReleased = function() {
+    condition = 1;
+    keys[keyCode] = true;
+};
+var keyReleased = function(){
+    keys[keyCode] = false;
+};
+var y = [
+    200, 200, 200, 200, 200, 200, 200, 200, 150, 100, 175, 100, 150, 75, 125, 25, 100, 420, 105, 420, 105, 420, 200, 200, 100, 25, 200, 200, 300, 250, 150, 50, 420, 350, 350, 250, 200, 200, 200, 200, 200
+];
+var draw = function() {
+    frameRate(30);
+    textAlign(CENTER,CENTER);
+    background(163, 163, 163);
+    fill(0);
+    textSize(100);
+    text("3", 185 + platformX - 200, 150);
+    text("2", 585 + platformX - 200, 150);
+    text("1", 985 + platformX - 200, 150);
+    text("Go!", 1330 + platformX - 200, 150);
+    fill(255, 255, 255);
+    noStroke();
+    ellipse(ballX, ballY, ballS, ballS);
+    ballY += ballFall;
+    var c = 0;
+    var d = 0;
+    while (c < y.length) {
+        fill(0);
+        rect(platformX + d, y[c], 200, 10);
+        if (platformX > ballX - 200 - d && platformX < ballX - d) {
+            if (ballY > y[c] - 11 && ballY < y[c] + 11) {
+                ballY = y[c];
+                ballStop = ballY;
+                ballFall = 0;
+                ballY = y[c] - ballS / 2;
+                ballJump = 12;
+                condition = 0;
+            }
+            if (keyIsPressed&&keyCode===UP && ballY<=y[c]-ballS/2 && condition===0) {
+                ballY-=ballJump;
+            }
+            if (ballY < ballStop - 150) {
+                condition = 1;
+            }
+        } else {
+            ballFall = 5;
+        }
+        c++;
+        d += 200;
+    }
+    platformX -= pink;
+    if (condition === 1) {
+        ballFall = 5;
+    }
+    textSize(25);
+    text("Lives: "+lives, 50, 20);
+    if (platformX < -7200) {
+        ballX += ballSpeed;
+        pink = 0;
+    }
+    if (ballX > 400) {
+        page = 4;
+    }
+
+    if (ballY > 400) {
+        lives--;
+        ballY = 100;
+        ballY += ballFall;
+        platformX = 200;
+        platformX = 200;
+    }
+    if (lives === 0) {
+        page = 3;
+    }
+    if (page === 3) {
+        background(0, 0, 0);
+        textSize(50);
+        fill(255, 0, 0);
+        text("GAME OVER", 201, 120);
+    }
+    if (page === 4) {
+        background(0, 0, 0);
+        textSize(50);
+        fill(0, 255, 100);
+        text("YOU WIN", 201, 120);
+    }
+};
