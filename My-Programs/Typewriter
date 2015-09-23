@@ -1,0 +1,83 @@
+var boldfont = false;
+var italicfont = false;
+var Status = "Menu";
+var txt = [];
+keyTyped = function(){
+    if(key.code===BACKSPACE||key.code===DELETE){
+        txt.pop();
+    }    
+    else{
+        txt.push(key);
+    }
+};
+var keyboard = [];
+var Button = function(x, y, w, h, o, s){
+    resetMatrix();
+    translate(x, y);
+    if (dist(x, x, mouseX, mouseX)<w && dist(y, y, mouseY, mouseY)<h){
+        if (mouseIsPressed){
+            Status = o;
+
+        }
+                translate(random(-3, 3), random(-3, 3));
+
+        }
+    fill(255, 255, 255);
+    strokeWeight(5);
+    stroke(140, 140, 140);
+    rectMode(CENTER);
+    rect(0, 0, w, h);
+    fill(255, 255, 255);
+    fill(135, 135, 135);
+    textAlign(CENTER, CENTER);
+    text(o, 0, 0);
+    resetMatrix();
+};
+draw = function() {
+background(204, 204, 204);
+        resetMatrix();
+    frameRate(20);
+    noStroke();
+    resetMatrix();
+    if (Status === "Menu" || Status === "Menu"){
+        
+        textSize(30);
+        Button(79, 30, 150, 50, "Bold", 60);
+        Button(318,30,150,50,"Italic",60);
+        textSize(20);
+        fill(0, 0, 0);
+    textAlign(LEFT,TOP);
+    textSize(15);
+    text(frameCount%20<=10?txt.join("")+"|":txt.join(""),5,64);
+    for(var i = 0; i < keyboard.length; i ++){
+        var k = keyboard[i];
+        textAlign(CENTER,CENTER);
+    
+        if(keyIsPressed&&key.toString().toLowerCase()===k[2].toLowerCase()){
+            fill(181, 174, 174);
+        }
+        rect(k[0],k[1],k[3],k[4]);
+        fill(0, 0, 0);
+        text(k[2],k[0]+20,k[1]+20);
+    }
+    if(boldfont === true){
+        textFont(createFont("Arial Black"));
+    }
+    if(italicfont === true){
+        textFont(createFont("Verdana Italic"));
+    }
+    }
+    if (Status === "Bold"){
+        resetMatrix();
+        boldfont = true;
+        Status="Menu";
+         
+    }
+    if (Status === "Italic"){
+        italicfont = true;
+        Status="Menu";
+    }
+    resetMatrix();
+
+
+};
