@@ -1,0 +1,690 @@
+/***********************************
+
+I have been programming for more than a year now and understand all of the advanced concepts and I finished HTML.
+
+Double-spaced code for cleanness 
+
+*/
+
+var food_cake = function(x_POS,y_POS){
+    
+    fill(0, 0, 0, 100);
+    
+    noStroke();
+    
+    quad(x_POS+210,y_POS+281,x_POS+189,y_POS+231,x_POS+352,y_POS+161,x_POS+371,y_POS+191);
+    
+    quad(x_POS+212,y_POS+281,x_POS+189,y_POS+160,x_POS+147,y_POS+180,x_POS+163,y_POS+239);
+    
+    
+    stroke(56, 17, 7);
+    
+    strokeWeight(6);
+    
+    fill(71, 34, 4);
+    
+    quad(x_POS+192,y_POS+251,x_POS+189,y_POS+179,x_POS+352,y_POS+114,x_POS+351,y_POS+166);
+    
+    fill(71, 32, 13);
+    
+    quad(x_POS+191,y_POS+221,x_POS+189,y_POS+210,x_POS+351,y_POS+141,x_POS+351,y_POS+149);
+    
+    fill(0, 255, 200);
+    
+    stroke(0, 139, 209);
+    
+    triangle(x_POS+151,y_POS+113,x_POS+191,y_POS+183,x_POS+341,y_POS+113);
+    
+    quad(x_POS+190,y_POS+250,x_POS+189,y_POS+184,x_POS+150,y_POS+122,x_POS+148,y_POS+184);
+    
+    
+};
+
+var y = -100;
+
+var xx = 200;
+
+var px = 190;
+
+var pxy = 205;
+
+var page = 1;
+
+var cruise = function(x, y, r) {
+
+    pushMatrix();
+
+    translate(x, y);
+
+    rotate(r);
+
+    fill(54, 61, 2);
+
+    quad(-50, 0, 50, 0, 30, 20, -30, 20);
+
+    rect(10, 0, 4, -120);
+
+    rect(10, -20, -60, 4);
+
+    fill(255, 132, 0);
+
+    beginShape();
+
+    vertex(14, -120);
+
+    bezierVertex(14, -136, 100, -70, 50, 0);
+
+    bezierVertex(50, 0, 50, -30, 14, 0);
+
+    bezierVertex(14, 0, 40, -70, 14, -120);
+
+    endShape();
+
+    fill(255, 255, 255, 200);
+
+    beginShape();
+
+    vertex(10, -120);
+
+    bezierVertex(10, -120, 10, -70, -50, -20);
+
+    bezierVertex(-50, -20, -10, -30, 10, -20);
+
+    bezierVertex(10, -20, 30, -70, 10, -120);
+
+    endShape();
+
+    popMatrix();
+
+};
+
+var cruiseS = {
+
+    x: 200,
+
+    y: 150,
+
+    r: 0,
+
+
+
+    dx: 0,
+
+    dy: 0,
+
+    dr: 0
+
+};
+
+var sunRays = function() {
+
+    noStroke();
+
+    fill(255, 213, 0);
+
+    triangle(0, 90, -40, 0, 40, 0);
+
+};
+
+var sun = function(sunWidth) {
+
+    for (var i = 0; i < 360; i += 22.5) {
+
+        pushMatrix();
+
+        translate(width / 2, height / 2);
+
+        rotate(i);
+
+        sunRays();
+
+        popMatrix();
+
+    }
+
+
+
+    fill(255, 255, 0);
+
+    ellipse(width / 2, height / 2, 100, 100);
+
+};
+
+var Rainbow = function(x, y, radius) {
+
+    this.x = x;
+
+    this.y = y;
+
+    this.radius = radius;
+
+};
+
+var rainbow = new Rainbow(198, 197, 338);
+
+var rainbow_draw = function(rainbow) {
+
+    noFill();
+
+    strokeWeight(5);
+
+    stroke(255, 0, 0);
+
+    arc(rainbow.x, rainbow.y, rainbow.radius, rainbow.radius, 180, 360);
+
+    stroke(250, 200, 0);
+
+    arc(rainbow.x, rainbow.y, rainbow.radius - 10, rainbow.radius - 10, 180, 360);
+
+    stroke(240, 255, 102);
+
+    arc(rainbow.x, rainbow.y, rainbow.radius - 20, rainbow.radius - 20, 180, 360);
+
+    stroke(29, 255, 13);
+
+    arc(rainbow.x, rainbow.y, rainbow.radius - 30, rainbow.radius - 30, 180, 360);
+
+    stroke(122, 155, 255);
+
+    arc(rainbow.x, rainbow.y, rainbow.radius - 40, rainbow.radius - 40, 180, 360);
+
+};
+
+mousePressed = function() {
+
+    page += 1;
+
+};
+
+var background1 = function() {
+
+    pushMatrix();
+
+    background(0, 102, 92); // Bottom Gradient Color
+
+    var lineThickness = 8;
+
+    var greyValue = 0; // Gradient Opacity Value
+
+    strokeWeight(lineThickness);
+
+    for (var i = 400; i >= 0; i = i - lineThickness) {
+
+        stroke(0, 255, 255, greyValue); // Top Gradient Color 
+
+        line(0, i, 400, i);
+
+        greyValue = greyValue + 6;
+
+
+
+    }
+
+    popMatrix();
+
+};
+
+var drawRange = function(s, yy) {
+
+    var incAmount = 0.01;
+
+    for (var t = s; t < incAmount * width + s; t += incAmount) {
+
+        var n = noise(t);
+
+        var y = map(n, 0, 1, 0, height / 2);
+
+        rect((t - s) * 100, height - y - yy, 1, y);
+
+    }
+
+};
+
+draw = function() {
+
+    if (page === 1) {
+
+        background1();
+
+        pushMatrix();
+
+        translate(1, 116);
+
+        rainbow_draw(rainbow);
+
+        popMatrix();
+
+        var noiseScale = 0.008;
+
+        for (var x = 0; x < width; x++) {
+
+            var noiseVal = noise(x * noiseScale, noiseScale);
+
+            stroke(0, 184, 46);
+
+            line(x, noiseVal * 585, x, height);
+
+            noStroke();
+
+        }
+
+
+
+        pushMatrix();
+
+        translate(108, -103);
+
+        sun(134);
+
+        popMatrix();
+
+        cruise(cruiseS.x, cruiseS.y - 15, cruiseS.r);
+
+        noStroke();
+
+        fill(0, 21, 255, 190);
+
+        beginShape();
+
+        for (var x = 0; x <= 420; x += 10) {
+
+            var h = 75 * noise(x * 0.01 + frameCount * 0.02, frameCount * 0.01) - 150;
+
+            h += 0.1 * (200 - x) * sin(2 * frameCount);
+
+            curveVertex(x - 10, 200 - h);
+
+            var dx = x - cruiseS.x;
+
+            if (abs(dx) < 50) {
+
+                var dy = (200 - h) - (cruiseS.y + dx * sin(cruiseS.r));
+
+                var fy = 5;
+
+                if (dy > 0) {} else {
+
+                    fy += 1 * dy;
+
+                    cruiseS.dx -= sin(cruiseS.r) * 0.01 * fy;
+
+                    fy -= 5 * (dx * radians(cruiseS.dr) + cruiseS.dy);
+
+                    cruiseS.dx *= 0.99;
+
+                }
+
+
+
+                cruiseS.dy += 0.01 * fy;
+
+                cruiseS.dr += 0.0001 * fy * dx;
+
+            }
+
+        }
+
+        vertex(400, 400);
+
+        vertex(0, 400);
+
+        vertex(0, 400);
+
+        endShape();
+
+        cruiseS.x += cruiseS.dx;
+
+        cruiseS.y += cruiseS.dy;
+
+        cruiseS.r += cruiseS.dr;
+
+        if ((cruiseS.x > 400) || (cruiseS.x < 0)) {
+
+            cruiseS.x = 200;
+
+            cruiseS.y = 200;
+
+            cruiseS.r = 0;
+
+            cruiseS.dx = cruiseS.dy = cruiseS.dr = 0;
+
+        }
+
+        fill(245, 255, 140);
+
+        rect(0, 334, 408, 113);
+
+        fill(100, 89, 255);
+
+        rect(32, 343, 136, 50);
+
+        for (var i = 0; i < 7; i += 1) {
+
+            fill(255, 255, 255);
+
+            var x = i * 21;
+
+            rect(x + 32, 343, 10, 50);
+
+        }
+
+        pushMatrix();
+
+        translate(265, 315);
+
+        noStroke();
+
+        fill(255, 255, 255);
+
+        ellipse(-6, 50, 50, 50);
+
+        noStroke();
+
+        fill(0, 0, 0);
+
+        quad(-10, 50, 5, 50, 3, 60, -8, 60);
+
+        triangle(-10, 50, 5, 50, -2, 45);
+
+        quad(-25, 35, -11, 26, -7, 35, -15, 40);
+
+        bezier(-25, 35, -20, 29, -15, 27, -10, 25);
+
+        quad(15, 37, 5, 28, 2, 35, 10, 40);
+
+        bezier(5, 28, 7, 30, 10, 28, 15, 37);
+
+        quad(-29, 51, -20, 50, -17, 60, -25, 65);
+
+        bezier(-29, 51, -30, 55, -28, 60, -25, 65);
+
+        quad(19, 51, 12, 50, 10, 60, 14, 65);
+
+        bezier(19, 51, 18, 56, 18, 60, 14, 65);
+
+        quad(-7, 65, 2, 65, 5, 73, -10, 73);
+
+        bezier(-10, 73, -5, 75, 0, 75, 5, 73);
+
+        popMatrix();
+
+        noStroke();
+
+        fill(214, 183, 112);
+
+        rect(324, 349, 63, 3);
+
+        rect(298, 375, 63, 3);
+
+        textSize(83);
+
+        fill(255, 255, 255);
+
+        textAlign(CENTER, CENTER);
+
+        text("In the\nSummer...", 201, 135);
+
+        fill(255, 0, 0);
+
+        textSize(57);
+
+        text("(click)", 201, 257);
+
+    }
+
+    if (page === 2) {
+
+        background1();
+
+        textSize(30);
+
+        fill(0);
+
+        text("I go skydiving.", 201, 50);
+
+        stroke(54, 28, 3);
+
+        drawRange(0, 100);
+
+        stroke(79, 41, 6);
+
+        drawRange(10, 50);
+
+        stroke(92, 50, 13);
+
+        drawRange(20, 0);
+
+        pushMatrix();
+
+        scale(0.7);
+
+        translate(87, 25);
+
+        fill(133, 0, 0);
+
+        stroke(0, 0, 0);
+
+        bezier(px, y - 60, xx - 115, y - 244, xx + 115, y - 244, pxy, y - 60);
+
+        line(px, y - 60, pxy, y - 60);
+
+        noStroke();
+
+        fill(255, 232, 178);
+
+        rect(xx - 10, y - 8, 20, 61);
+
+        line(xx - 10, y + 52, xx - 10, y);
+
+        line(xx + 10, y + 52, xx + 10, y);
+
+        stroke(0, 0, 0);
+
+        ellipse(xx, y + 17, 43, 51);
+
+        stroke(0, 0, 0);
+
+        strokeWeight(3);
+
+        line(xx, y - 7, xx - 22, y + 4);
+
+        line(xx, y - 8, xx - 19, y);
+
+        line(xx - 5, y - 8, xx - 15, y - 2);
+
+        line(xx, y - 8, xx + 20, y + 4);
+
+        line(xx + 4, y - 8, xx + 19, y + 1);
+
+        line(xx + 6, y - 7, xx + 19, y + 1);
+
+        fill(255, 255, 255);
+
+        stroke(0, 0, 0);
+
+        strokeWeight(0.5);
+
+        ellipse(xx - 10, y + 14, 11, 7);
+
+        ellipse(xx + 10, y + 14, 11, 7);
+
+        fill(0, 51, 255);
+
+        ellipse(xx - 10, y + 14, 4, 4);
+
+        ellipse(xx + 10, y + 14, 4, 4);
+
+        fill(105, 105, 105);
+
+        ellipse(xx - 10, y + 14, 1, 1);
+
+        ellipse(xx + 10, y + 14, 1, 1);
+
+        stroke(0, 0, 0);
+
+        strokeWeight(1);
+
+        noFill();
+
+        bezier(xx - 4, y + 22, xx - 2, y + 28, xx + 2, y + 28, xx + 4, y + 22);
+
+        bezier(xx - 7, y + 31, xx - 2, y + 27, xx + 2, y + 28, xx + 7, y + 28);
+
+        fill(158, 158, 158);
+
+        noStroke();
+
+        ellipse(xx - 48, y + 21, 13, 44);
+
+        ellipse(xx + 47, y + 21, 13, 44);
+
+        noStroke();
+
+        fill(0, 255, 50);
+
+        rect(xx - 20, y + 47, 40, 52);
+
+        rect(xx - 46, y + 47, 30, 16);
+
+        rect(xx - 57, y + 25, 16, 38);
+
+        rect(xx + 39, y + 25, 16, 38);
+
+        rect(xx + 12, y + 47, 30, 16);
+
+        fill(252, 229, 171);
+
+        stroke(0, 0, 0);
+
+        bezier(xx - 10, y + 47, xx - 5, y + 60, xx + 5, y + 60, xx + 10, y + 47);
+
+        noFill();
+
+        line(px, y - 60, xx - 17, y + 93);
+
+        line(pxy, y - 60, xx + 17, y + 93);
+
+        line(xx, y - 60, xx, y + -9);
+
+        noStroke();
+
+        fill(252, 229, 171);
+
+        ellipse(xx - 48, y + -1, 22, 22);
+
+        ellipse(xx + 47, y + -1, 22, 22);
+
+        fill(0, 0, 0);
+
+        ellipse(xx + 10, y + 211, 14, 29);
+
+        ellipse(xx - 10, y + 211, 14, 29);
+
+        fill(4, 39, 212);
+
+        rect(xx - 20, y + 98, 40, 18);
+
+        rect(xx - 20, y + 102, 19, 103);
+
+        rect(xx + 1, y + 102, 19, 103);
+
+        fill(0, 0, 0);
+
+        rect(xx - 21, y + 89, 43, 27);
+
+        rect(xx - 5, y + 106, 10, 20);
+
+        popMatrix();
+
+        if (y <= 100) {
+
+            y = y + 6;
+
+        } else {
+
+            y = y + 1;
+
+        }
+
+        if (y >= 100) {
+
+            px = 60;
+
+            pxy = 340;
+
+            y = y + 1;
+
+        }
+
+        if (y >= 590) {
+
+            page = 3;
+
+        }
+
+
+
+    }
+
+    if(page === 3){
+
+        background1();
+
+        fill(0);
+    
+        textSize(30);
+    
+        text("I eat yummy foods.",201,50);
+        
+        pushMatrix();
+        
+        scale(1.4);
+        
+        translate(-52,-60);
+        
+        noStroke();
+        
+        fill(0, 140, 33);
+        
+        arc(150, 250, 150, 150, 1, 180);
+        
+        stroke(255, 255, 255);
+        
+        arc(150, 250, 115, 118, 1, 180);
+        
+        fill(255, 0, 0);
+        
+        noStroke();
+        
+        arc(150, 250, 106, 113, 1, 180);
+        
+        for (var i = 0; i < 3; i+=1) {
+            var x = i * 28;
+            fill(0, 0, 0);
+            ellipse(x + 120, 269, 10, 10);
+        }   
+            
+        popMatrix();
+        
+        food_cake(2,-38);
+        
+        fill(255, 0, 0);
+        
+        textSize(50);
+        
+        text("(click)",327,287);
+
+    }
+    
+    if(page === 4){
+        
+        background1();
+        
+        textSize(40);
+        
+        fill(0);
+        
+        text("So that's what I do for\nmost of my summer! I\nobviously do more, but\nI just added in only\nsome of the factors.",201,150);
+    }
+
+};
