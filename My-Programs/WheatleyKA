@@ -1,0 +1,146 @@
+// Apparantly someone went into my account and changed the code to a copied GlaDos. I changed it back to Wheatley!
+// Credit to Nate for animating Wheatley. I drew the character and cube.
+draw = function() {
+    background(179, 179, 179);
+    textFont(createFont("Segoe UI Light"));
+    noStroke();
+    fill(217, 217, 217);
+    rect(142, 202, 100, 203);
+    textSize(100);
+    fill(255, 255, 255);
+    text("W", 148, 325);
+    fill(122, 122, 122);
+    rect(0, 0, 74, 476);
+    fill(255, 255, 255);
+    textSize(37);
+    text("W\nH\nE\nA\nT\nL\nE\nY", 20, 43);
+    pushMatrix();
+    translate(1, -55);
+    strokeWeight(3);
+    fill(255);
+    ellipse(191, 180, 190, 190);
+    fill(217, 217, 217);
+    stroke(79, 79, 79);
+    strokeWeight(5);
+    //eye
+    var pupil=function(xShift,yShift){
+        
+        noStroke();
+        pushMatrix(); 
+        translate(xShift,yShift);
+        var c=-(255-223);
+        fill(0, 255+c, 255, 100+c);
+        ellipse(217, 186, 60, 60);
+        fill(0, 255+c, 255, 200+c);
+        ellipse(217, 186, 50, 50);
+        fill(0, 255+c, 255, 100+c);
+        ellipse(217, 186, 40, 40);
+        fill(0, 227+c, 212+c);
+        ellipse(217, 186, 30, 30);
+        for(var x=217;x<217+60;x+=3){
+            var h = x-217;
+            var l = Math.sqrt(4*h*(60-h));
+            stroke(0, 0, 0,30);
+            line(x-30,(186-l/2),x-30,186+l/2);
+            line((218-l/2),x-60,218+l/2,x-60);
+        }//'Pixelized' feel
+        fill(0);
+        noStroke();
+        ellipse(218, 186, 20, 20);
+        noFill();
+        ellipse(217, 187, 60, 60);
+        popMatrix();
+        
+    };
+        ellipse(216, 186, 110, 110);
+        fill(0);
+        strokeWeight(1);
+        line(217, 238, 217, 133);
+        
+        pupil(cos(frameCount)*8,0);
+    var aperture =function(){
+        //What? That's what it's actually called!
+        
+    };
+        
+    
+    noFill();
+    strokeWeight(1);
+    stroke(0);
+    arc(222, 184, 150, 150, 123, 235);
+    line(154, 93, 178, 121);
+    line(163, 270, 182, 248);
+    arc(205, 184, 150, 150, 308, 425);
+    line(250, 106, 251, 125);
+    line(237, 252, 240, 260);
+    var handlebars= function(xShift,yShift) {
+        pushMatrix(); 
+        translate(-xShift,-yShift);
+        fill(209, 205, 205);
+        rect(142, 106, 140, 7);
+        fill(97, 95, 95);
+        rect(175, 105, 74, 9);
+        translate(xShift*2, yShift*2);
+        fill(209, 205, 205);
+        rect(159, 254, 127, 7);
+        
+        fill(97, 95, 95);
+        rect(182, 253, 75, 9);
+        popMatrix();
+    };
+    handlebars(0,cos(frameCount%360-frameCount%4)*5);
+    
+    fill(158, 158, 158);
+    triangle(260, 126, 268, 137, 272, 113);
+    triangle(147, 127, 152, 137, 153, 113);
+    triangle(167, 254, 161, 242, 167, 232);
+    triangle(260, 241, 268, 231, 272, 255);
+    popMatrix();
+    pushMatrix();
+    translate(107, 152);
+    fill(150);
+    noStroke();
+    rect(140, 140, 100, 100);
+    fill(224, 224, 224);
+    rect(135, 137, 40, 40);
+    rect(135, 207, 40, 40);
+    rect(204, 206, 40, 40);
+    rect(203, 137, 40, 40);
+    rect(136, 182, 25, 16);
+    rect(218, 182, 25, 16);
+    rect(180, 136, 20, 25);
+    rect(180, 222, 20, 25);
+    fill(150);
+    noStroke();
+    ellipse(190, 192, 80, 80);
+    fill(41, 41, 41);
+    ellipse(190, 192, 60, 60);
+    fill(79, 201, 245);
+    ellipse(190, 192, 53, 53);
+    stroke(173, 173, 173);
+    strokeWeight(3);
+    line(150, 189, 230, 190);
+    line(190, 153, 191, 231);
+    fill(199, 199, 199);
+    stroke(97, 97, 97);
+    ellipse(190, 192, 35, 35);
+    scale(0.06);
+    translate(2972, 3000);
+    fill(94, 93, 94);
+    noStroke();
+    ellipse(200, 200, 380, 380);
+    fill(207, 207, 207);
+    ellipse(200, 200, 200, 200);
+    stroke(138, 138, 138);
+    strokeWeight(20);
+    line(220, 292, 397, 200);
+    line(280, 250, 342, 65);
+    line(290, 170, 200, 7);
+    line(260, 124, 65, 57);
+    line(174, 110, 5, 196);
+    line(121, 148, 65, 338);
+    line(108, 218, 200, 398);
+    line(151, 278, 333, 350);
+    resetMatrix();
+    popMatrix();
+};
