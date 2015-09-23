@@ -1,0 +1,21 @@
+draw = function() {
+    background(0, 0, 0);
+    
+    strokeWeight(5);
+    stroke(255, 255, 255);
+    noFill();
+    rect(30, 30, 337, 340, 30);
+    
+    textFont(createFont("Tahoma Bold"));
+    textSize(246);
+    textAlign(CENTER, CENTER);
+    
+    pushMatrix();
+        rotate(10);
+        translate(44, -38);
+        text("D", 140, 194);
+        text("E", 253, 194);
+    popMatrix();
+    
+    ellipse(326, 70, 30, 30);
+};
