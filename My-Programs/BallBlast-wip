@@ -1,0 +1,140 @@
+// Don't ya'll love it when you get to shoot a huge cannon (well, not that huge) many times as you want?
+// Well, I've created that simulation here!
+// Simply fire at any angle by clicking. 
+
+// Credit to Michael De Villa for atan(); angle call with the blasterBullets,
+// Thank you so much!
+
+
+// Define Stars used as background
+
+var Stars = function() {
+    this.x = random(1, 400);
+    this.y = random(1, 400);
+    this.size = random(1, 5);
+    this.drawStars = function() {
+        ellipse(this.x, this.y, this.size, this.size);
+        this.twinkle();
+    };
+    this.StarsMover = function() {
+        this.x--;
+        if (this.x < 0) {
+            this.x = random(400, 800);
+        }
+    };
+    this.twinkle = function() {
+        fill(255, 255, 255);
+        ellipse(this.x, this.y, this.size, this.size);
+    };
+};
+// Draw the "blaster" and the function used to call it
+
+var blaster = {
+    xPOS: 50,
+    yPOS: 350,
+    base: {
+        width: 40,
+        height: 40
+    },
+    barrel: {
+        width: 100,
+        height: 30,
+        pivotX: 0,
+        pivotY: 0,
+        angle: 0,
+        corner1: [0, 0],
+        corner2: [0, 0],
+        corner3: [0, 0],
+        corner4: [0, 0]
+    },
+    reloadTime: 30,
+    reloadCounter: 0
+};
+var Blaster = function() {
+    blaster.barrel.pivotX = blaster.barrel.width * 0.3;
+    blaster.barrel.pivotY = blaster.barrel.height * 0.5;
+    if ((mouseX - blaster.xPOS) >= 0) {
+        blaster.barrel.angle = atan(((blaster.yPOS - blaster.base.height) - mouseY) / (mouseX - blaster.xPOS));
+    } else {
+        blaster.barrel.angle = atan(((blaster.yPOS - blaster.base.height) - mouseY) / (mouseX - blaster.xPOS)) - 180;
+    }
+};
+var bullet = {
+    width: 30,
+    xPOSs: [],
+    yPOSs: [],
+    xSpeeds: [],
+    ySpeeds: [],
+    maxAmount: 10,
+    counter: 0,
+    gravity: 1,
+    friction: 0.2
+};
+var blasterBullets = function() {
+    if (blaster.reloadCounter > 0) {
+        blaster.reloadCounter--;
+    }
+    if (blaster.reloadCounter === 0 && mouseIsPressed) {
+        bullet.xPOSs[bullet.counter] = blaster.xPOS + ((blaster.barrel.width - blaster.barrel.pivotX) * cos(blaster.barrel.angle));
+        bullet.yPOSs[bullet.counter] = blaster.yPOS - blaster.base.height - ((blaster.barrel.width - blaster.barrel.pivotX) * sin(blaster.barrel.angle));
+        if (blaster.barrel.angle >= 0) {
+            bullet.xSpeeds[bullet.counter] = abs(mouseX - blaster.xPOS) / 10;
+            bullet.ySpeeds[bullet.counter] = -1 * abs(mouseY - (blaster.yPOS - blaster.base.height)) / 10;
+        }
+        else if (blaster.barrel.angle <= -180){
+            bullet.xSpeeds[bullet.counter] = -1 * abs(mouseX - blaster.xPOS) / 10;
+            bullet.ySpeeds[bullet.counter] = -1 * abs(mouseY - (blaster.yPOS - blaster.base.height)) / 10;
+        }
+        else if (blaster.barrel.angle <= -90) {
+            bullet.xSpeeds[bullet.counter] = -1 * abs(mouseX - blaster.xPOS) / 10;
+            bullet.ySpeeds[bullet.counter] = abs(mouseY - (blaster.yPOS - blaster.base.height)) / 10;
+        }
+        else {
+            bullet.xSpeeds[bullet.counter] = abs(mouseX - blaster.xPOS) / 10;
+            bullet.ySpeeds[bullet.counter] = abs(mouseY - (blaster.yPOS - blaster.base.height)) / 10;
+        }
+        
+        bullet.counter++;
+        if (bullet.counter >= bullet.maxAmount) {
+            bullet.counter = 0;
+        }
+        blaster.reloadCounter = blaster.reloadTime;
+    }
+    for (var i = 0; i < bullet.xPOSs.length; i++) {
+        stroke(0, 0, 0);
+        fill(0, 0, 0);
+        ellipse(bullet.xPOSs[i], bullet.yPOSs[i], bullet.width, bullet.width);
+        bullet.xPOSs[i] += bullet.xSpeeds[i];
+        bullet.yPOSs[i] += bullet.ySpeeds[i];
+        bullet.ySpeeds[i] += bullet.gravity;
+        if (bullet.yPOSs[i] > 400 - 50 - (bullet    .width / 2)) {
+            bullet.ySpeeds[i] = 0;
+        }
+    }
+};
+// Draw the stars and call the draw loop
+
+var generateStars = [];
+for (var i = 0; i < 500; i++) {
+        generateStars.push(new Stars());
+    }
+var draw = function() {
+    background(21, 26, 77);
+    noStroke();
+    for (var j = 0; j < generateStars.length; j++) {
+        generateStars[j].StarsMover();
+        generateStars[j].drawStars();
+    }
+    blasterBullets();
+    Blaster();
+    fill(194, 194, 194);
+    rect(0, 350, 400, 50);
+    fill(255, 255, 255);
+    textSize(30);
+    textAlign(LEFT,TOP);
+    text("Vel X: "+mouseX+" Vel Y: "+mouseY,22,27);
+    text("Speed: "+blaster.reloadTime,22,69);
+    fill(255, 0, 0);
+    noStroke();
+    rect(26,301,50,50);
+};
