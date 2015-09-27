@@ -1,0 +1,38 @@
+/***********************************
+ * Keep Calm Creator
+ * Created by Indie
+ * 
+ * Sep 11, 2015
+ * 
+ * Make a spinoff of this program showcasing your Keep Calm!
+ * Inspiration from KingKhan007
+************************************/
+
+
+//Change these variables to your set match
+var backgroundColor = color(255, 255, 255);
+var txtColor = color(0, 0, 0);
+var txt = "Khan On";
+var logo = "?";
+var txtFont = createFont("Gill Sans MT");
+
+// Draw Call
+draw = function() {
+    // Base Code:
+    background(backgroundColor);
+    textFont(txtFont);
+    textAlign(CENTER, CENTER);
+    textSize(105);
+    fill(txtColor);
+    text(logo, 200, 75);
+    textSize(50);
+    text("KEEP\nCALM", 200, 180);
+    textSize(30);
+    text("AND", 200, 250);
+    textSize(50);
+    text(txt, 200, 320);
+    noFill();
+    stroke(255, 0, 0);
+    strokeWeight(3);
+    rect(30, 270, 334, 122);
+};
