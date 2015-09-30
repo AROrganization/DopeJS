@@ -1,0 +1,411 @@
+/************************************************************
+ * Robot Resistance v 1.1
+ * Created by Indie sometime 4 months ago. 
+ * This is not a tryhard-ripoff of The Ultimate TD. That program is WAY better than this one.
+ * 
+ * Scoring:
+ * - You must not have hacked. No screenshots, only spin-offs. I will be checking the code!
+ * - Get on at least 500 points and no more than 12 lives lost. 
+ * - 10 points for killing one enemy
+ * 
+ * - Click on a turret to upgrade it. White is most common, gray is max.
+ *  
+ *****************************
+ * Credit to "ThunderDude987" for spritework I had not added in yet.
+ * Credit to Timestopper for fixing a hack in the system (sorry guys :/)
+ * 
+ * Have fun!
+ **********************************/
+
+// Like I stated, don't mess around with these. 
+var money = 500;
+var lives = 15;
+textFont(createFont("Tahoma", 20), 36);
+scale(width / 400, height / 400);
+
+var gameState = "Menu";
+var overButton;
+
+var goal = getImage("cute/Star");
+var defenseDamage = 5;
+var defenseDamageIncrement = 2;
+var defenseReloadTime = 5;
+var defenseRange = 100;
+var defenseRange_INCR = 10;
+var defensePrice = 100;
+var ROBOTHealth = 100;
+var ROBOTSpeed = 60;
+var ROBOTDelayTime = 15; // time between enemies
+var healthIncreasment = 20; // Per wave
+var wave_BUILDUPCREASE = 5; // Enemies per wave
+var wave = 0; // Wave number
+var timeNextWave = 10; // Countdown to the next wave
+var waveActive = false; // Is the wave active (enemies are spawning)?
+var enemiesLeft = 0; // Enemies left in the wave
+angleMode = "degrees";
+var NORTH = 270,
+    EAST = 0,
+    SOUTH = 90,
+    WEST = 180;
+var path = [];
+path.push({
+    x: 350,
+    y: -50
+});
+path.push({
+    x: 350,
+    y: 50
+});
+path.push({
+    x: 50,
+    y: 50
+});
+path.push({
+    x: 50,
+    y: 150
+});
+path.push({
+    x: 350,
+    y: 150
+});
+path.push({
+    x: 350,
+    y: 250
+});
+path.push({
+    x: 201,
+    y: 250
+});
+path.push({
+    x: 200,
+    y: 400
+});
+
+var defenses = [];
+var enemies = [];
+var trackEnemy = function(x, y, array) {
+    var closestObj = null; // We haven't found anything yet
+    var closestDist = Infinity; // ditto
+    for (var i = 0; i < array.length; i++) {
+        var d = dist(x, y, array[i].x, array[i].y);
+        if (d < closestDist) {
+            // Closer element!
+            closestObj = array[i];
+            closestDist = d;
+        }
+    }
+    return closestObj;
+};
+var createROBOT = function(x, y, health, speed) {
+    var newROBOT = {
+        x: x,
+        y: y,
+        health: health,
+        speed: speed,
+        target: 0
+    };
+    enemies.push(newROBOT);
+};
+var drawROBOTS = function() {
+    for (var i = 0; i < enemies.length; i++) {
+        var ROBOT = enemies[i];
+        image(getImage("avatars/robot_male_2"), ROBOT.x - 25, ROBOT.y - 25, 50, 50);
+        textSize(15);
+        textAlign(CENTER, CENTER);
+        fill(255, 255, 255);
+        text(ROBOT.health, ROBOT.x, ROBOT.y - 30);
+    }
+};
+var updateROBOTS = function() {
+    for (var i = enemies.length - 1; i >= 0; i--) {
+        var ROBOT = enemies[i];
+        var dist = pow(ROBOT.x - path[ROBOT.target].x, 2) + pow(ROBOT.y - path[ROBOT.target].y, 2);
+        var sdist = sqrt(dist);
+        if (dist < ROBOT.speed / 30) {
+            ROBOT.x = path[ROBOT.target].x;
+            ROBOT.y = path[ROBOT.target].y;
+            ROBOT.target++;
+        } else {
+            ROBOT.x += ((path[ROBOT.target].x - ROBOT.x) / sdist) * ROBOT.speed / 30;
+            ROBOT.y += ((path[ROBOT.target].y - ROBOT.y) / sdist) * ROBOT.speed / 30;
+        }
+        if (ROBOT.y >= 300) {
+            ROBOT.health = 0;
+            lives--;
+        }
+
+        if (ROBOT.health <= 0) {
+            enemies.splice(i, 1);
+            money += 15;
+        }
+    }
+};
+var putDEF = function(x, y, type) {
+    var newdefense = {
+        x: x,
+        y: y,
+        color: color(255, 255, 255),
+        tier: 0,
+        damage: defenseDamage,
+        range: defenseRange,
+        reload: defenseReloadTime,
+        lastFired: -Infinity,
+        angle: NORTH
+    };
+    defenses.push(newdefense);
+};
+var drawDEF = function() {
+    for (var i = 0; i < defenses.length; i++) {
+        var defense = defenses[i];
+        pushMatrix();
+        translate(defense.x, defense.y);
+        rotate(defense.angle);
+        fill(defense.color);
+        stroke(0, 0, 0);
+        strokeWeight(2);
+        rect(-4, -9, 26, 20);
+        fill(255, 0, 0);
+        ellipse(-26, 2, 40, 40);
+        popMatrix();
+    }
+};
+var updateDEF = function() {
+    for (var i = defenses.length - 1; i >= 0; i--) {
+        var defense = defenses[i];
+        var x = defense.x,
+            y = defense.y;
+        var ROBOT = trackEnemy(x, y, enemies);
+        if (ROBOT !== null) {
+            var x2 = ROBOT.x,
+                y2 = ROBOT.y;
+            if (dist(x, y, x2, y2) <= defense.range + 15) {
+                if (frameCount - defense.lastFired >= defense.reload) {
+                    // yes, subtract health
+                    ROBOT.health -= defense.damage;
+                    defense.lastFired = frameCount;
+                    fill(255, 0, 0);
+                    stroke(60, 0, 255);
+                    strokeWeight(4);
+                    line(defense.x, defense.y, ROBOT.x, ROBOT.y);
+                    strokeWeight(1);
+                    noStroke();
+
+                }
+                defense.angle = atan2(ROBOT.y - defense.y, ROBOT.x - defense.x);
+            }
+        }
+    }
+};
+var mouseClicked = function() {
+    var x = mouseX;
+    var y = mouseY;
+    if (money >= defensePrice) {
+        if (y <= 280) {
+            for (var i = 0; i < defenses.length; i++) {
+                var twr = defenses[i];
+                if (dist(x, y, twr.x, twr.y) <= 40) {
+                    if (twr.tier >= 10) {
+                        return;
+                    }
+                    twr.tier++;
+                    twr.range += defenseRange_INCR;
+                    twr.damage += defenseDamageIncrement;
+                    twr.color = lerpColor(color(0, 0, 255), color(255, 255, 255), twr.tier / 10);
+                    money -= defensePrice;
+                    return; // defense on that spot...
+                }
+            }
+
+            // Place a defense!
+            putDEF(x, y);
+            money -= defensePrice;
+        }
+    }
+};
+var lastROBOT = 0;
+var loopGame = function() {
+    if (waveActive) {
+        if (enemiesLeft <= 0) {
+            enemiesLeft = 0;
+            timeNextWave = 10; // reset countdown
+            waveActive = false;
+        } else {
+            if (frameCount - lastROBOT >= ROBOTDelayTime) {
+                var x = random(20, width - 20);
+                var y = -100;
+                createROBOT(x, y, ROBOTHealth, ROBOTSpeed);
+                enemiesLeft--;
+                lastROBOT = frameCount;
+            }
+        }
+    } else {
+        timeNextWave -= 1 / 30;
+        if (timeNextWave < 0) {
+            wave++;
+            timeNextWave = 0;
+            waveActive = true;
+            enemiesLeft = wave_BUILDUPCREASE * wave;
+
+            ROBOTHealth += healthIncreasment;
+        }
+    }
+
+    updateDEF();
+    updateROBOTS();
+};
+
+var drawButton = function(buttonText, x, y, length, color, buttonHeight) {
+    overButton = false;
+    noStroke();
+    //Shadow
+    noFill();
+    rect(x - 2, y + 2, length, buttonHeight + 1, 3);
+    if (mouseX >= x && mouseX <= x + length && mouseY >= y && mouseY <= y + buttonHeight) {
+        overButton = true;
+    }
+    // Button Outline Color
+    noFill();
+    stroke(0, 0, 0);
+    strokeWeight(3);
+    rect(x, y, length, buttonHeight, 2);
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text(buttonText, x + length / 2, y + buttonHeight / 2);
+};
+var buttonPressed = false;
+
+var background1 = function(){
+    for (var j = 0; j < 14; j++) {
+        for (var i = 0; i < 12; i++) {
+            image(getImage("cute/StoneBlockTall"), i * 36, j * 30, 40, 60);
+        }
+    }
+};
+var drawHappyEmoji = function(x, y){
+    strokeWeight(10);
+    stroke(0, 0, 0);
+    fill(255, 234, 94);
+    ellipse(x, y, 200, 200);
+    stroke(255, 255, 255, 150);
+    arc(x+-18, y+-30, 100, 102, -184, -63);
+    stroke(0, 0, 0);
+    fill(0, 0, 0);
+    rect(x+-41, y+-46, 10, 47, 50);
+    rect(x+36, y+-46, 10, 47, 50);
+    noFill();
+    arc(x+-7, y+16, 100, 100, 11, 120);
+};
+
+var draw = function() {
+    if (gameState === "Menu") {
+        background(196, 196, 196);
+        background1();
+        
+        textSize(32);
+        fill(0, 0, 0);
+        text("Robot Resistance", 128, 46);
+        
+        fill(50, 255, 0);
+        textSize(35);
+        text("KHAN\nEDITION", 324, 64);
+        
+        fill(0, 255, 255);
+        textSize(40);
+        text("By Indie", 135, 87);
+        
+        pushMatrix();
+            scale(0.8, 0.8);
+            drawHappyEmoji(137, 387);
+            rotate(15);
+            textSize(65);
+            fill(255, 0, 0);
+            text("INDIE", 466, 307);
+        popMatrix();
+        
+        fill(0, 0, 0);
+        drawButton("Play", 81, 107, 238, 5, 55);
+        if (overButton && mouseIsPressed) {
+            gameState = "Play";
+        }
+        drawButton("Help", 236, 170, 160, 5, 40);
+        if (overButton && mouseIsPressed) {
+            gameState = "Instructions";
+        }
+        drawButton("Message to all", 236, 220, 160, 5, 40);
+        if (overButton && mouseIsPressed) {
+            gameState = "Other";
+        }
+        drawButton("Report Hack", 7, 170, 160, 5, 40);
+        if (overButton && mouseIsPressed) {
+            gameState = "Problems";
+        }
+        fill(255, 255, 255);
+        textSize(20);
+        text("It's finally out! Now you can play it!", 201, 16);
+    }
+    if (gameState === "Play") {
+        background(171, 171, 171);
+        frameRate(50);
+        for (var j = 0; j < 14; j++) {
+            for (var i = 0; i < 12; i++) {
+                image(getImage("cute/StoneBlockTall"), i * 36, j * 30, 40, 60);
+            }
+        }
+        for (var i = 1; i < path.length; i++) {
+            line(path[i - 1].x, path[i - 1].y, path[i].x, path[i].y);
+        }
+        loopGame();
+        drawDEF();
+        drawROBOTS();
+        fill(0, 0, 0);
+        textSize(24);
+        textAlign(LEFT, TOP);
+        text("Money Left:\n" + money, 0, height - 90);
+        for (var i = 0; i < lives; i++) {
+            var life = getImage("cute/Star");
+            image(life, i * 20, height - 20, 20, 20);
+        }
+
+        textSize(20);
+        textAlign(RIGHT, TOP);
+        text("Next wave coming in: "+round(timeNextWave), width, height - 90);
+        textSize(50);
+        // countdown
+        if (lives <= 0) {
+            background(255, 255, 255);
+            fill(0, 0, 0);
+            textSize(40);
+            textAlign(CENTER, CENTER);
+            fill(255, 0, 0);
+            text("You lost! Press\nRESTART to play\nagain.", width / 2, height / 2);
+        }
+    }
+    if (gameState === "Instructions") {
+        background(171, 171, 171);
+        textSize(100);
+        fill(255, 255, 255);
+        text("Help", 201, 57);
+        textSize(20);
+        text("You are a fallen soldier, yet you have the \nexpenses needed to live. To defend\nyour country, you must summon defense\ns to arms and kill the aliens.\n\nGood Luck!", 201, 185);
+        drawButton("Back", 50, 350, 100, 5, 25);
+        if (overButton && mouseIsPressed) {
+            gameState = "Menu";
+        }
+    }
+    if (gameState === "Other") {
+        println("I'm not trying to ripoff The Ultimate TD. Yes, this isn't any better than it, but it was worth a try making. Besides, that was my first idea to make when I saw the Ultimate TD. If you feel offended in any way because of this, I'm sorry.\n\n\nDRAG THE GRAY BAR UP\n--------------------\n");
+        loop();
+    }
+    if(gameState === "Problems"){
+        background1();
+        textSize(85);
+        fill(255, 255, 255);
+        text("Problems", 201, 52);
+        textSize(20);
+        text("If you find any glitches, hacks, etc, please\nfor the audience's (and mine) sake, report\nit in the Tips & Thanks. Thank you so much.", 201, 184);
+        drawButton("Back", 50, 350, 100, 5, 25);
+        if (overButton && mouseIsPressed) {
+            gameState = "Menu";
+        }
+    }
+};
