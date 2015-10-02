@@ -1,0 +1,72 @@
+// I've been programming for about 2 years now,
+// I finished Intro, Advanced JS, and Advanced Natural Sim. I understand 100% of JS (89% of the real JS), and I know real HTML.
+
+// Here's my entry for the Contest,
+// Still working on it :D
+
+var drawHappyEmoji = function(x, y){
+    strokeWeight(10);
+    stroke(0, 0, 0);
+    fill(255, 234, 94);
+    ellipse(x, y, 200, 200);
+    stroke(255, 255, 255, 150);
+    arc(x+-18, y+-30, 100, 102, -184, -63);
+    stroke(0, 0, 0);
+    fill(0, 0, 0);
+    rect(x+-41, y+-46, 10, 47, 50);
+    rect(x+36, y+-46, 10, 47, 50);
+    noFill();
+    arc(x+-7, y+16, 100, 100, 11, 120);
+};
+var drawSadEmoji = function(x, y){
+    strokeWeight(10);
+    stroke(0, 0, 0);
+    fill(255, 234, 94);
+    ellipse(x, y, 200, 200);
+    stroke(255, 255, 255, 150);
+    arc(x+-18, y+-30, 100, 102, -184, -63);
+    stroke(0, 0, 0);
+    fill(0, 0, 0);
+    rect(x+-41, y+-46, 10, 47, 50);
+    rect(x+36, y+-46, 10, 47, 50);
+    noFill();
+    arc(x+0, y+86, 98, 100, -137, -40);
+};
+var drawCryingEmoji = function(x, y){
+    strokeWeight(10);
+    stroke(0, 0, 0);
+    fill(255, 234, 94);
+    ellipse(x, y, 200, 200);
+    stroke(255, 255, 255, 150);
+    arc(x+-18, y+-30, 100, 102, -184, -63);
+    stroke(0, 0, 0);
+    fill(0, 0, 0);
+    textSize(73);
+    text("> <", x+-53, y);
+    noFill();
+    arc(x+0, y+86, 98, 100, -137, -40);    
+};
+var drawGooglyEmoji = function(x, y){
+    strokeWeight(10);
+    stroke(0, 0, 0);
+    fill(255, 234, 94);
+    ellipse(x, y, 200, 200);
+    stroke(255, 255, 255, 150);
+    arc(x+-18, y+-30, 100, 102, -184, -63);
+    stroke(0, 0, 0);
+    fill(0, 0, 0);
+    textSize(73);
+    text("< >", x+-53, y);
+    fill(255, 0, 0);
+    arc(x+-2, y+16, 100, 100, 0, 163);
+};
+
+draw = function() {
+    background(255, 209, 92);
+    scale(0.5);
+    drawHappyEmoji(138, 124);
+    drawSadEmoji(377, 124);
+    drawCryingEmoji(614, 124);
+    drawGooglyEmoji(138, 356);
+    resetMatrix();
+};
