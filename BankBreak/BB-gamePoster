@@ -1,0 +1,119 @@
+/*************************************
+ * Bank Break
+ * Coming November 1st (estimated date)
+ * 
+ * (Credit to arecchan22 for the yellow road
+ * spokes. However, the road and hills were 
+ * copied from him)
+ * 
+ * Members:
+ * - Infinity Runner
+ * - Cadett
+ * - KCF
+ * - SoS team
+ * - JavaLava
+ * - TCO
+ * - God Of War
+ * - 200 and 3005
+ * - tntgirl6
+ * - ignatio01
+ * - John Smith
+ * - VMC
+ * - MetallicMakarov
+ * - Elite (biome)
+ * - Beans
+ * - ROCKGURL
+ **************************************/
+var Star = function() {
+    this.x = random(1, 400);
+    this.y = random(1, 400);
+    this.size = random(1, 5);
+    this.drawStar = function() {
+        ellipse(this.x, this.y, this.size, this.size);
+        this.twinkle();
+    };
+    this.starMover = function() {
+        this.x--;
+        if (this.x < 0) {
+            this.x = random(400, 800);
+        }
+    };
+    this.twinkle = function() {
+        fill(255, 255, 255);
+        ellipse(this.x, this.y, this.size, this.size);
+
+    };
+};
+var stars = [];
+for (var i = 0; i < 500; i++) {
+    stars.push(new Star());
+
+}
+draw = function() {
+    background(0, 0, 0);
+    for (var j = 0; j < stars.length; j++) {
+        stars[j].starMover();
+        stars[j].drawStar();
+    }
+    
+    noStroke();
+    fill(125, 125, 125);
+    rect(150, 54, 48, 1500);
+    rect(156, 50, 36, 1500);
+    rect(160, 43, 28, 1500);
+    rect(171, 10, 4, 1500);
+    rect(200, 290, 180, 1500);
+    rect(20, 300, 100, 1500);
+    rect(20, 100, 120, 1500);
+    rect(90, 140, 160, 1500);
+    rect(300, 70, 160, 1500);
+    rect(0, 170, 30, 1500);
+
+    fill(12, 61, 0);
+    ellipse(111, 167, 242, 96);
+    ellipse(288, 192, 242, 96);
+
+    fill(25, 70, 0, 250);
+    ellipse(252, 203, 242, 96);
+    ellipse(125, 203, 242, 96);
+
+    pushMatrix();
+    noStroke();
+    translate(200, 200);
+    fill(128, 128, 128);
+    arc(0, 200, 1500, 450, 180, 360);
+    fill(61, 61, 61);
+    quad(-122, 200, -130 + 125, -25, -130 + 124, -25, -130 - 8, 200);
+    quad(-122, 200, 144 - 125, -25, 130 - 124, -25, 130 + 8, 200);
+
+    fill(102, 102, 102);
+    quad(-104 - 32, 201, -128 + 123, -25, -130 + 111, -25, -130 - 95, 200);
+    quad(128 + 8, 200, 129 - 123, -24, 130 - 111, -25, 130 + 95, 215);
+    fill(77, 77, 77);
+    quad(-135 + 8, 200, 114 - 123, -25, 117 - 111, -25, 43 + 95, 215);
+
+    fill(133, 118, 49);
+    quad(-6, 210, 8, 210, 6, 190, -6, 190);
+    quad(-6, 150, 6, 150, 4, 120, -4, 120);
+    quad(-4, 90, 4, 90, 2, 70, -2, 70);
+    quad(-2, 50, 2, 50, 1, 35, -1, 35);
+    quad(-1, 20, 1, 20, 0.5, 10, -0.5, 10);
+    quad(-0.533333333333, 0, 0.5, 0, 0.25, -5, -0.25, -5);
+    popMatrix();
+
+    textFont(createFont("Arial Bold"));
+    textSize(50);
+    textAlign(CENTER, CENTER);
+
+    fill(255, 255, 255);
+    text("Bank Break", 201, 50);
+
+    textSize(30);
+    text("by Indie", 201, 85);
+
+    pushMatrix();
+    textSize(90);
+    fill(255, 255, 255);
+    text("COMING\nSOON", 201, 258);
+    popMatrix();
+};
