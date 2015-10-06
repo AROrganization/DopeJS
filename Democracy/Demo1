@@ -1,0 +1,487 @@
+/***************************************
+ * Democracy v 1.1 by Indie
+ * The continuation of WOTA (Wars of The Ancients)
+ * Created on Oct 5, 2015 // No plagiarism, please. 
+ * 
+ * Because WOTAR turned out so good in its time, I decided to bring back the joy of democracy and leadership to KA. This isn't really considered much of a game, more of a trading place and politics. Post in the Tips & Thanks if you would like to join. IF YOU ARE GOING TO JOIN, do not spam me with notifications. Members who are inactive for a month are more may be removed, but if you tell me why, and have a reasonable answer, I will let you off. No rude language // inappropriate behavior in the forums. 
+ * 
+ * MORE CITIES COME AS MORE PLAYERS ARRIVE
+ * 
+ * Members:
+ * - Indie [CEO] [Founder of Game] [Founder of Raytehm (hint hint ZeroSkyrim) [[Allianced With Toulexe Ricardandor]]
+ * - Sri [Co-Founder] [Founder of TheBoss]
+ * - Dishant [Co-Founder [Founder of PeanutMANIA]
+ * - LushLavender [Player] [Founder of UN]
+ * - The Chosen One [Co-founder] [Founder of Toulexe Ricardandor] [[Allianced With Raytehm]]
+ * - Luke [Co-founder] [Founder of Land of Plentiful]
+ * - Infinity Runner [Co-founder] [Founder of mrXDia]
+ * - ignatio01 [Co-founder] [Founder of Megapolis]
+ * -
+ * 
+ * Controls:
+ * - 
+ * -
+ * -
+ * -
+ * -
+ * -
+ * -
+ * 
+ * How to read:
+ * - Hover over a city (circle) to see its info and trading options. 
+ * - Click on it to go to the city
+ * - Post in the tips and thanks if you would like to found a city / town.
+ * - Have fun!
+ ************************************/
+var notFoundedYet;
+var resources;
+
+var crops = 0,
+    spices = 0,
+    water = 0,
+    minerals = 0,
+    population = 0,
+    warsWon = 0,
+
+    iron = 0,
+    wood = 0,
+    gold = 0,
+    copper = 0,
+    stone = 0,
+    cement = 0,
+    brick = 0,
+    wheat = 0,
+    coal = 0,
+    fish = 0,
+    plants = 0;
+
+var allianceWith = "",
+    reputation = 0,
+    lands = 0;
+
+var mainHold = ""; // You can change this soon to view other lands and more cities.
+
+// More cities coming as more players come!
+var city1Founder = "Indie",
+    city2Founder = "Sri",
+    city3Founder = "Timestopper",
+    city4Founder = "LushLavender",
+    city5Founder = "TCO",
+    city6Founder = "Luke",
+    city7Founder = "Infinity Runner",
+    city8Founder = "ignatio01";
+
+var overBttn;
+var state = "Menu";
+var bttnPressed = false;
+var Button = function(x, y, w, h, r, ts, t, displayed) {
+    overBttn = false;
+    stroke(43, 43, 43);
+    strokeWeight(2);
+    rectMode(CENTER);
+    fill((mouseX < x + w / 2 && mouseX > x - w / 2 && mouseY < y + h / 2 && mouseY > y - h / 2) ? cursor(HAND) || 255 : color(255, 0));
+    rect(x, y, w, h, r);
+    fill(97, 97, 97);
+    textAlign(CENTER, CENTER);
+    textFont(createFont("Tahoma"));
+    textSize(ts);
+    text(t, x, y);
+    if (mouseX < x + w / 2 && mouseX > x - w / 2 && mouseY < y + h / 2 && mouseY > y - h / 2) {
+        fill(255);
+        textAlign(BASELINE, BASELINE);
+        textSize(20);
+        text(displayed, 10, 20, 390, 400);
+        overBttn = true;
+    }
+};
+var basemap = [
+    "111111111ggg11111",
+    "1111111ggggggggg",
+    "11111ggggggggggg",
+    "1111gggggggggggg",
+    "111ggggggg111111",
+    "gggggggggg111111",
+    "gggggggg11111111",
+    "gggg1ggggggggg11",
+    "11111ggggggggggg",
+    "111111gggggggggg",
+    "111ggggggggg1111",
+    "ggggggggggggg111",
+    "1111111ggggggg11",
+    "111111gggggggggg",
+    "111ggggggggggggg",
+    "gggggggggggggggg",
+];
+
+var city1Stats = function(stats){
+    crops = 100;
+    spices = 100;
+    water = 100;
+    minerals = 100;
+    population = 100;
+    warsWon = 100;
+
+    iron = 100;
+    wood = 200;
+    gold = 100;
+    copper = 100;
+    stone = 200;
+    cement = 100;
+    brick = 100;
+    wheat = 200;
+    coal = 200;
+    fish = 200;
+    plants = 200;
+};
+var city2Stats = function(stats){
+    crops = 100;
+    spices = 100;
+    water = 100;
+    minerals = 100;
+    population = 100;
+    warsWon = 100;
+
+    iron = 100;
+    wood = 200;
+    gold = 100;
+    copper = 100;
+    stone = 200;
+    cement = 100;
+    brick = 100;
+    wheat = 200;
+    coal = 200;
+    fish = 200;
+    plants = 200;
+};
+var city3Stats = function(stats){
+    crops = 100;
+    spices = 100;
+    water = 100;
+    minerals = 100;
+    population = 100;
+    warsWon = 100;
+
+    iron = 100;
+    wood = 200;
+    gold = 100;
+    copper = 100;
+    stone = 200;
+    cement = 100;
+    brick = 100;
+    wheat = 200;
+    coal = 200;
+    fish = 200;
+    plants = 200;
+};
+var city4Stats = function(stats){
+    crops = 100;
+    spices = 100;
+    water = 100;
+    minerals = 100;
+    population = 100;
+    warsWon = 100;
+
+    iron = 100;
+    wood = 200;
+    gold = 100;
+    copper = 100;
+    stone = 200;
+    cement = 100;
+    brick = 100;
+    wheat = 200;
+    coal = 200;
+    fish = 200;
+    plants = 200;
+};
+var city5Stats = function(stats){
+    crops = 100;
+    spices = 100;
+    water = 100;
+    minerals = 100;
+    population = 100;
+    warsWon = 100;
+
+    iron = 100;
+    wood = 200;
+    gold = 100;
+    copper = 100;
+    stone = 200;
+    cement = 100;
+    brick = 100;
+    wheat = 200;
+    coal = 200;
+    fish = 200;
+    plants = 200;
+};
+var city6Stats = function(stats){
+    crops = 100;
+    spices = 100;
+    water = 100;
+    minerals = 100;
+    population = 100;
+    warsWon = 100;
+
+    iron = 100;
+    wood = 200;
+    gold = 100;
+    copper = 100;
+    stone = 200;
+    cement = 100;
+    brick = 100;
+    wheat = 200;
+    coal = 200;
+    fish = 200;
+    plants = 200;
+};
+var city7Stats = function(stats){
+    crops = 100;
+    spices = 100;
+    water = 100;
+    minerals = 100;
+    population = 100;
+    warsWon = 100;
+
+    iron = 100;
+    wood = 200;
+    gold = 100;
+    copper = 100;
+    stone = 200;
+    cement = 100;
+    brick = 100;
+    wheat = 200;
+    coal = 200;
+    fish = 200;
+    plants = 200;
+};
+var city8Stats = function(stats){
+    crops = 100;
+    spices = 100;
+    water = 100;
+    minerals = 100;
+    population = 100;
+    warsWon = 100;
+
+    iron = 100;
+    wood = 200;
+    gold = 100;
+    copper = 100;
+    stone = 200;
+    cement = 100;
+    brick = 100;
+    wheat = 200;
+    coal = 200;
+    fish = 200;
+    plants = 200;
+};
+var mapWid = width / basemap[0].length;
+var mapHei = height / basemap.length;
+
+draw = function() {
+    if (state === "Menu") {
+        noStroke();
+        background(67, 237, 0);
+
+        for (var i = 0; i < basemap.length; i++) {
+            for (var j = -12; j < basemap[i].length; j++) {
+                var x = j * mapWid;
+                var y = i * mapHei;
+                noStroke();
+                if (basemap[i][j] !== "g") {
+                    fill(67, 237, 0);
+
+                } else {
+                    fill(87, 179, 255);
+                }
+                rect(x, y, mapWid, mapHei);
+            }
+        }
+
+        textAlign(CENTER, CENTER);
+
+        textSize(50);
+        fill(255, 255, 255);
+        text("Democracy", 201, 139);
+
+        textSize(25);
+        fill(0, 0, 0);
+        text("founded by Indie", 201, 179);
+
+        Button(383, 31, 12, 12, 5, 7, "", "Raytehm, City of " + city1Founder);
+        if (overBttn && mouseIsPressed) {
+            state = "City1";
+        }
+        Button(60, 65, 12, 12, 5, 7, "", "TheBoss, City of " + city2Founder);
+        if (overBttn && mouseIsPressed) {
+            state = "City2";
+        }
+        Button(383, 275, 12, 12, 5, 7, "", "PeanutMANIA, City of " + city3Founder);
+        if (overBttn && mouseIsPressed) {
+            state = "City3";
+        }
+        Button(331, 111, 12, 12, 5, 7, "", "UN, City of "+city4Founder);
+        if (overBttn && mouseIsPressed) {
+            state = "City4";
+        }
+        Button(60, 201, 12, 12, 5, 7, "", "Toulexe Ricardandor, City of "+city5Founder);
+        if (overBttn && mouseIsPressed) {
+            state = "City5";
+        }
+        Button(60, 314, 12, 12, 5, 7, "", "Land of Plentiful, City Of "+city6Founder);
+        if (overBttn && mouseIsPressed) {
+            state = "City6";
+        }
+        Button(260, 207, 12, 12, 5, 7, "", "mrXDia, City Of "+city7Founder);
+        if (overBttn && mouseIsPressed) {
+            state = "City7";
+        }
+        Button(369, 307, 12, 12, 5, 7, "", "Megapolis, City Of "+city8Founder);
+        if (overBttn && mouseIsPressed) {
+            state = "City7";
+        }
+        Button(260, 357, 121, 47, 5, 20, "Trading", "Trading site");
+        if (overBttn && mouseIsPressed) {
+            state = "Trading";
+        }
+        
+
+    }
+    if (state === "City1") {
+        city1Stats();
+        textAlign(CENTER, CENTER);
+        background(0);
+        textSize(20);
+        fill(255, 255, 255);
+        text("Name: Raythem\nFounder: " + city1Founder + "\nResources:\n- Crops:" + crops + "\n- Spices:" + spices + "\n- Water:" + water + "\n- Population:" + population + "\n- Minerals:" + minerals + "\n- WarsWon:" + warsWon, 201, 126);
+        text("Iron:" + iron + "\nCopper:" + copper + "\nGold:" + gold + "\nWood:" + wood + "\nStone:" + stone + "\nCement:" + cement + "\nBrick:" + brick + "\nWheat:" + wheat + "\nCoal:" + coal + "\nFish:" + fish + "\nPlants:" + plants, 329, 151);
+        Button(119, 350, 100, 47, 51, 20, "Back");
+        if (overBttn && mouseIsPressed) {
+            state = "Menu";
+        }
+    }
+    
+    if(state === "City2"){
+        city2Stats();
+        textAlign(CENTER, CENTER);
+        background(0);
+        textSize(20);
+        fill(255, 255, 255);
+        text("Name: TheBoss\nFounder: " + city2Founder + "\nResources:\n- Crops:" + crops + "\n- Spices:" + spices + "\n- Water:" + water + "\n- Population:" + population + "\n- Minerals:" + minerals + "\n- WarsWon:" + warsWon, 201, 126);
+        text("Iron:" + iron + "\nCopper:" + copper + "\nGold:" + gold + "\nWood:" + wood + "\nStone:" + stone + "\nCement:" + cement + "\nBrick:" + brick + "\nWheat:" + wheat + "\nCoal:" + coal + "\nFish:" + fish + "\nPlants:" + plants, 329, 151);
+        Button(119, 350, 100, 47, 51, 20, "Back");
+        if (overBttn && mouseIsPressed) {
+            state = "Menu";
+        }
+    }
+    
+    if(state === "City3"){
+        city3Stats();
+        textAlign(CENTER, CENTER);
+        background(0);
+        textSize(20);
+        fill(255, 255, 255);
+        text("Name: PeanutMANIA\nFounder: " + city3Founder + "\nResources:\n- Crops:" + crops + "\n- Spices:" + spices + "\n- Water:" + water + "\n- Population:" + population + "\n- Minerals:" + minerals + "\n- WarsWon:" + warsWon, 156, 126);
+        text("Iron:" + iron + "\nCopper:" + copper + "\nGold:" + gold + "\nWood:" + wood + "\nStone:" + stone + "\nCement:" + cement + "\nBrick:" + brick + "\nWheat:" + wheat + "\nCoal:" + coal + "\nFish:" + fish + "\nPlants:" + plants, 332, 151);
+        Button(119, 350, 100, 47, 51, 20, "Back");
+        if (overBttn && mouseIsPressed) {
+            state = "Menu";
+        }
+    }
+    
+    if(state === "City4"){
+        city4Stats();
+        textAlign(CENTER, CENTER);
+        background(0);
+        textSize(20);
+        fill(255, 255, 255);
+        text("Name: UN\nFounder: " + city4Founder + "\nResources:\n- Crops:" + crops + "\n- Spices:" + spices + "\n- Water:" + water + "\n- Population:" + population + "\n- Minerals:" + minerals + "\n- WarsWon:" + warsWon, 156, 126);
+        text("Iron:" + iron + "\nCopper:" + copper + "\nGold:" + gold + "\nWood:" + wood + "\nStone:" + stone + "\nCement:" + cement + "\nBrick:" + brick + "\nWheat:" + wheat + "\nCoal:" + coal + "\nFish:" + fish + "\nPlants:" + plants, 332, 151);
+        Button(119, 350, 100, 47, 51, 20, "Back");
+        if (overBttn && mouseIsPressed) {
+            state = "Menu";
+        }
+    }
+    
+    if(state === "City5"){
+        city5Stats();
+        textAlign(CENTER, CENTER);
+        background(0);
+        textSize(20);
+        fill(255, 255, 255);
+        text("Name:  Toulexe Ricardandor\nFounder: " + city5Founder + "\nResources:\n- Crops:" + crops + "\n- Spices:" + spices + "\n- Water:" + water + "\n- Population:" + population + "\n- Minerals:" + minerals + "\n- WarsWon:" + warsWon, 156, 126);
+        text("Iron:" + iron + "\nCopper:" + copper + "\nGold:" + gold + "\nWood:" + wood + "\nStone:" + stone + "\nCement:" + cement + "\nBrick:" + brick + "\nWheat:" + wheat + "\nCoal:" + coal + "\nFish:" + fish + "\nPlants:" + plants, 332, 151);
+        Button(119, 350, 100, 47, 51, 20, "Back");
+        if (overBttn && mouseIsPressed) {
+            state = "Menu";
+        }
+    }
+    
+    if(state === "City6"){
+        city6Stats();
+        textAlign(CENTER, CENTER);
+        background(0);
+        textSize(20);
+        fill(255, 255, 255);
+        text("Name: Land Of Plentiful \nFounder: " + city6Founder + "\nResources:\n- Crops:" + crops + "\n- Spices:" + spices + "\n- Water:" + water + "\n- Population:" + population + "\n- Minerals:" + minerals + "\n- WarsWon:" + warsWon, 156, 126);
+        text("Iron:" + iron + "\nCopper:" + copper + "\nGold:" + gold + "\nWood:" + wood + "\nStone:" + stone + "\nCement:" + cement + "\nBrick:" + brick + "\nWheat:" + wheat + "\nCoal:" + coal + "\nFish:" + fish + "\nPlants:" + plants, 332, 151);
+        Button(119, 350, 100, 47, 51, 20, "Back");
+        if (overBttn && mouseIsPressed) {
+            state = "Menu";
+        }
+    }
+    
+    if(state === "City7"){
+        city7Stats();
+        textAlign(CENTER, CENTER);
+        background(0);
+        textSize(20);
+        fill(255, 255, 255);
+        text("Name: mrXDia\nFounder: " + city7Founder + "\nResources:\n- Crops:" + crops + "\n- Spices:" + spices + "\n- Water:" + water + "\n- Population:" + population + "\n- Minerals:" + minerals + "\n- WarsWon:" + warsWon, 156, 126);
+        text("Iron:" + iron + "\nCopper:" + copper + "\nGold:" + gold + "\nWood:" + wood + "\nStone:" + stone + "\nCement:" + cement + "\nBrick:" + brick + "\nWheat:" + wheat + "\nCoal:" + coal + "\nFish:" + fish + "\nPlants:" + plants, 332, 151);
+        Button(119, 350, 100, 47, 51, 20, "Back");
+        if (overBttn && mouseIsPressed) {
+            state = "Menu";
+        }
+    }
+    
+    if(state === "City8"){
+        city8Stats();
+        textAlign(CENTER, CENTER);
+        background(0);
+        textSize(20);
+        fill(255, 255, 255);
+        text("Name: Megapolis\nFounder: " + city7Founder + "\nResources:\n- Crops:" + crops + "\n- Spices:" + spices + "\n- Water:" + water + "\n- Population:" + population + "\n- Minerals:" + minerals + "\n- WarsWon:" + warsWon, 156, 126);
+        text("Iron:" + iron + "\nCopper:" + copper + "\nGold:" + gold + "\nWood:" + wood + "\nStone:" + stone + "\nCement:" + cement + "\nBrick:" + brick + "\nWheat:" + wheat + "\nCoal:" + coal + "\nFish:" + fish + "\nPlants:" + plants, 332, 151);
+        Button(119, 350, 100, 47, 51, 20, "Back");
+        if (overBttn && mouseIsPressed) {
+            state = "Menu";
+        }
+    }
+    
+    
+    
+    if(state === "Trading"){
+        background(0);
+        textAlign(CENTER, CENTER);
+        
+        textSize(50);
+        fill(255, 255, 255);
+        text("Trading", 201, 30);
+        
+        textSize(20);
+        text("Global Trades", 201, 71);
+        
+        textSize(15);
+        text("100 wheat for 100 iron, 100 copper for 200 brick\n100 coal for 500 fish, 100 cement for 200 iron\n100 plants for 100 spices, 100 spices for 1000 water\n100 crops for 300 minerals, 5 gold for 50 iron\n200 cement for 100 plants, 100 fish for 100 brick", 201, 129);
+        
+        textSize(20);
+        text("Form a Trade", 201, 200);
+        
+        textSize(15);
+        text("Example: numItems + items for numItems + items\n100 gold for 9999 fish (ridiculous, don't do that)\n\nPost in the Tips and Thanks with another tradeholder\nor lord what you'd like to trade.", 201, 264);
+        Button(119, 350, 100, 47, 51, 20, "Back");
+        if (overBttn && mouseIsPressed) {
+            state = "Menu";
+        }
+    }
+    cursor(CROSS);
+};
