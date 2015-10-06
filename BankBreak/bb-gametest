@@ -1,0 +1,452 @@
+/*************************************
+ * Bank Break @2015
+ * Created by the BankBreak devs! We rule!
+ * Break in the world's most protected bank, and escape with no bloodshed!
+ * 
+ * Scoreboard (dev scores are allowed)
+ * -
+ * - 
+ * -
+ * -
+ * -
+ * 
+ * This is currently an in-dev game. Please don't see this yet!
+ * Thanks for playing, be sure to SMASH that vote button (not forcing you!)
+ * Credits
+ * - AlexT for fixing glitches
+ ****************************************/
+var gameState = "Menu";
+var overButton;
+var v = color(190, 190, 190, 100);
+var vb = color(255, 255, 255);
+var vvb = noFill();
+var extra=0;
+var drawButton = function(buttonText, x, y, length, color, buttonHeight) {
+    var val = v;
+    overButton = false;
+    noStroke();
+    noFill();
+    rect(x - 2, y + 2, length, buttonHeight + 1, 3);
+    if (mouseX >= x && mouseX <= x + length && mouseY >= y && mouseY <= y + buttonHeight) {
+        val = vvb;
+        overButton = true;
+    }
+    strokeWeight(3);
+    stroke(0, 0, 0);
+    fill(val);
+    rect(x, y, length, buttonHeight, 2);
+    textAlign(CENTER, CENTER);
+    fill(0, 0, 0);
+    textSize(33);
+    text(buttonText, x + length / 2, y + buttonHeight / 2);
+};
+var buttonPressed = false;
+
+var tF = createFont("Tahoma");
+var grappleHookUnlocked = false;
+var distracterUnlocked = false;
+var smokeBombUnlocked = false;
+var duplicatorUnlocked = false;
+var escapeJetpackUnlocked = false;
+var camImgUnlocked = false;
+
+var atomicBombUnlocked = false;
+var developerEditing = false;
+
+var noItemzUnlocked = true;
+
+var overBttn;
+var state = "Menu";
+var bttnPressed = false;
+var Button = function(x, y, w, h, r, ts, t, displayed) {
+    overBttn = false;
+    stroke(43, 43, 43);
+    strokeWeight(2);
+    rectMode(CENTER);
+    fill((mouseX < x + w / 2 && mouseX > x - w / 2 && mouseY < y + h / 2 && mouseY > y - h / 2) ? cursor(HAND) || 255 : color(255, 0));
+    rect(x, y, w, h, r);
+    fill(97, 97, 97);
+    textAlign(CENTER, CENTER);
+    textFont(createFont("Tahoma"));
+    textSize(ts);
+    text(t, x, y);
+    if (mouseX < x + w / 2 && mouseX > x - w / 2 && mouseY < y + h / 2 && mouseY > y - h / 2) {
+        fill(255);
+        textAlign(BASELINE, BASELINE);
+        textSize(20);
+        text(displayed, 10, 20, 390, 400);
+        overBttn = true;
+    }
+};
+var map1 = function() {
+    if (state === "Menu") {
+        rectMode(BASELINE);
+        background(36, 36, 36);
+        fill(64, 64, 64);
+        stroke(0);
+        noStroke();
+        //bank
+        rect(25, 25, 50, 50);
+        rect(23, 36, 2, 10);
+        rect(30, 23, 10, 2);
+        rect(75, 40, 3, 20);
+        //HQ
+        rect(320, 320, 75, 75);
+        rect(317, 330, 3, 20);
+        //Artillery Store
+        rect(330, 10, 60, 40);
+        rect(368, 50, 10, 2);
+        //Police Station
+        rect(104, 125, 50, 50);
+        rect(154, 130, 2, 15);
+        rect(154, 155, 2, 15);
+        stroke(0);
+        //The fountain
+        ellipse(240, 150, 50, 50);
+        ellipse(240, 150, 40, 40);
+        ellipse(240, 150, 5, 5);
+        noStroke();
+        //School
+        rect(5, 140, 50, 100);
+        rect(63, 150, 20, 80);
+        stroke(0);
+        for (var X = 63; X < 78; X += 12) {
+            for (var Y = 150; Y < 230; Y += 5) {
+                rect(X, Y, 8, 5);
+            }
+        }
+        noStroke();
+        rect(55, 180, 2, 20);
+        //Park
+        rect(110, 10, 170, 55);
+        rect(130, 70, 130, 20);
+        stroke(0);
+        for (var X = 130; X < 260; X += 5) {
+            for (var Y = 70; Y < 90; Y += 12) {
+                rect(X, Y, 5, 8);
+            }
+        }
+        noStroke();
+        //Library
+        rect(330, 70, 50, 80);
+        rect(328, 90, 2, 20);
+        //Statues
+        rect(335, 160, 40, 20);
+        rect(165, 130, 19, 40);
+        for (var X = 165; X < 185; X += 11) {
+            for (var Y = 130; Y < 170; Y += 5) {
+                rect(X, Y, 8, 5);
+            }
+        }
+        //Hospital
+        rect(20, 305, 50, 75);
+        rect(70, 325, 2, 30);
+        //Walmart
+        rect(320, 210, 60, 80);
+        rect(318, 220, 2, 20);
+        rect(318, 260, 2, 20);
+        //Hotel
+        rect(210, 210, 60, 50);
+        rect(230, 260, 20, 2);
+        //Town Hall
+        rect(210, 280, 60, 90);
+        rect(208, 300, 2, 20);
+        rect(270, 300, 2, 20);
+        //Church
+        rect(110, 210, 65, 60);
+        rect(130, 270, 30, 2);
+        //Warehouse
+        rect(115, 290, 65, 90);
+        rect(113, 310, 2, 20);
+        rect(180, 340, 2, 20);
+        //road
+        rect(90, -1, 5, 400);
+        rect(-1, 99, 291, 5);
+        rect(290, -1, 5, 401);
+        rect(90, 195, 400, 5);
+        rect(-1, 280, 96, 5);
+        rect(90, 394, 205, 5);
+        rect(188, 200, 5, 200);
+        textAlign(CENTER, CENTER);
+        fill(0);
+        textFont(createFont("Tahoma"));
+        textSize(12);
+        Button(50, 50, 47, 25, 5, 12, "B A N K", "Your quest starts here, at KACOINS!");
+        Button(30, 190, 30, 90, 10, 12, "S\nC\nH\nO\nO\nL");
+        Button(240, 235, 59, 20, 5, 12, "H O T E L");
+        Button(144, 240, 66, 20, 5, 11, "C H U R C H");
+        Button(195, 40, 60, 23, 7, 14, "P A R K");
+        Button(360, 360, 40, 30, 5, 15, "H Q", "This is where Boss assigned you the job. Do it correctly!");
+        Button(360, 30, 60, 20, 5, 7, "A R T I L L E R Y\nS T O R E", "Artillery Store. You unlock tools and weapons as you go!");
+        if (overBttn && mouseIsPressed) {
+            state = "ArtilleryStore";
+        }
+        
+        Button(129.5, 150, 48, 24, 5, 7, "P O L I C E\nS T A T I O N", "If you're caught, you obviously go here.. There's a bonus level here for escaping.");
+        Button(356, 170, 40, 15, 5, 7, "S T A T U E");
+        Button(45, 344, 15, 70, 5, 7, "H\nO\nS\nP\nI\nT\nA\nL");
+        Button(149, 336, 15, 85, 5, 7.5, "W\nA\nR\nE\nH\nO\nU\nS\nE");
+        Button(242, 325, 15, 85, 5, 7.5, "T\nO\nW\nN\n\nH\nA\nL\nL");
+        Button(356, 110, 15, 75, 5, 8, "L\nI\nB\nR\nA\nR\nY");
+        Button(240, 115, 80, 15, 5, 9, "F O U N T A I N", "The exit. While in the shafts of KACoins, your exit will be located somewhere near here.");
+        Button(350, 252, 15, 80, 5, 9, "W\nA\nL\nM\nA\nR\nT");
+    }
+    if (state === "ArtilleryStore") {
+        rectMode(LEFT);
+        background(102, 214, 255);
+        textAlign(CENTER, CENTER);
+
+        textSize(50);
+        text("ARMORY", 201, 30);
+
+        textSize(30);
+        text("Gear up!", 201, 65);
+
+        stroke(0, 0, 0);
+        strokeWeight(3);
+        fill(186, 186, 186);
+        rect(-2, 304, 418, 94);
+
+        textSize(15);
+        fill(255, 255, 255);
+        textAlign(TOP, LEFT);
+        text("This is merely a tutorial test. Weapons / items can be\nunlocked time to time after completing levels. You will find\nthese items in your inventory, after beating such levels. ", 3, 329);
+
+        rect(0, 103, 402, 2);
+        rect(0, 286, 402, 2);
+        for (var j = 0; j < 14; j++) {
+            for (var i = 0; i < 12; i++) {
+                fill(145, 145, 145);
+                noStroke();
+                pushMatrix();
+                translate(0, 107);
+                rect(i * 33, j * 13, 104, 9);
+                popMatrix();
+            }
+        }
+
+        fill(0);
+        textSize(100);
+        text("\u2694", 5, 83);
+        text("\u2620", 303, 83);
+
+        textAlign(CENTER, CENTER);
+        if (noItemzUnlocked === true) {
+            textSize(200);
+            text("?", 201, 188);
+        }
+        
+        Button(332, 373, 107, 35, 5, 24.3, "BACK");
+        if(overBttn && mouseIsPressed){
+            state = "Menu";
+        }
+    }
+
+};
+
+// Credit to AlexT for this.
+var brickWall = function() {
+    stroke(150);
+    strokeWeight(3);
+    fill(163, 49, 49);
+    for (var X = 0; X < 480; X += 50) {
+        for (var Y = -400; Y < 355; Y += 50) {
+            rect(X, Y, 50, 25, 5);
+            rect(X - 25, Y + 25, 50, 25, 5);
+        }
+    }
+    strokeWeight(1);
+};
+var charLevel = 1;
+var charProgress = 0;
+var perksToSpend = 0;
+
+var currentLvL = 1;
+var maxx = 123456789011245678901234567890123456789;
+
+// Devs, you got yourself something nice :3 Your stats are M3XED!
+var saveCode = "";
+
+var gameLoaded = false,
+    gameTime = 10;
+
+var barr = -50;
+
+// DEV BACKGROUND. FNAF style!
+var staticRGB = function(background) {
+    for(var d = 0;d <= 2000;d++){
+        noStroke();
+        fill(d, d, d, random(10,20));
+        rect(random(-30,430), random(-30,430), random(10,30), 3);
+    }
+    
+    fill(255, 255, 255, 150);
+    rect(0, barr, 400, 50);
+    barr += random(2, 2);
+    if(barr >= 400) {
+        barr = -50;
+    }
+    
+};
+
+var writerColour = color(255, 255, 255);
+//Typewriter. Credit to Knowledge (vmankala) for it!
+var typewriter = function(t) {
+    fill(writerColour);
+    textSize(20);
+    text(t.substring(0, floor(frameCount / 2) -extra/2), 0, 0, width, height);
+};
+
+// MAP. Credit to AlexT for it! It's so cool!
+var time = 10;
+
+draw = function() {
+    if (gameState!=="Play"){
+        extra++;
+    }
+    textFont(tF);
+    frameRate(Infinity);
+    if (charProgress === 100) {
+        charLevel += 1;
+        perksToSpend += 1;
+    }
+
+    if (currentLvL === 5) {
+        charProgress += 65;
+        perksToSpend += 1;
+    }
+
+    if (gameState === "Menu") {
+        background(0, 0, 0);
+        staticRGB();
+        
+        pushMatrix();
+        scale(0.5);
+        translate(82, 101);
+        fill(255, 255, 255);
+        beginShape();
+        vertex(400 - 252, 315);
+        bezierVertex(400 - 217, 263, 400 - 277, 299, 400 - 297, 286);
+        bezierVertex(400 - 207, 236, 400 - 316, 289, 400 - 330, 275);
+        bezierVertex(400 - 361, 246, 400 - 331, 270, 400 - 296, 257);
+        bezierVertex(400 - 256, 229, 400 - 345, 271, 400 - 363, 225);
+        bezierVertex(400 - 290, 242, 400 - 261, 224, 400 - 293, 224);
+        bezierVertex(400 - 337, 226, 400 - 384, 214, 400 - 381, 188);
+        bezierVertex(400 - 318, 207, 400 - 283, 214, 400 - 302, 202);
+        bezierVertex(400 - 399, 177, 400 - 390, 160, 400 - 388, 122);
+        bezierVertex(400 - 386, 141, 400 - 321, 192, 400 - 250, 200);
+
+        vertex(150, 200);
+        bezierVertex(142, 250, 171, 246, 182, 240);
+        bezierVertex(188, 238, 199, 212, 181, 217);
+        bezierVertex(159, 218, 186, 199, 203, 199);
+        bezierVertex(210, 198, 216, 198, 230, 190);
+        bezierVertex(245, 188, 202, 210, 216, 240);
+        bezierVertex(243, 260, 256, 239, 250, 200);
+
+        bezierVertex(321, 192, 386, 141, 388, 122);
+        bezierVertex(390, 160, 399, 177, 302, 202);
+        bezierVertex(283, 214, 318, 207, 381, 188);
+        bezierVertex(384, 214, 337, 226, 293, 224);
+        bezierVertex(261, 224, 290, 242, 363, 225);
+        bezierVertex(345, 271, 256, 229, 296, 257);
+        bezierVertex(331, 270, 361, 246, 330, 275);
+        bezierVertex(316, 289, 207, 236, 297, 286);
+
+        bezierVertex(277, 299, 217, 263, 252, 314);
+        bezierVertex(284, 348, 262, 372, 257, 340);
+        bezierVertex(248, 325, 248, 337, 236, 339);
+        bezierVertex(222, 339, 233, 292, 202, 331);
+        bezierVertex(194, 347, 171, 358, 192, 323);
+        bezierVertex(204, 312, 182, 303, 183, 322);
+        bezierVertex(204, 307, 183, 303, 167, 333);
+        bezierVertex(157, 350, 154, 320, 139, 358);
+        bezierVertex(132, 370, 122, 352, 400 - 252, 315);
+        endShape();
+        popMatrix();
+
+        textSize(30);
+        drawButton("Play", 238, 215, 150, 5, 50);
+        if (overButton && mouseIsPressed) {
+            gameState = "Play";
+        }
+        drawButton("Load", 238, 269, 150, 5, 50);
+        if (overButton && mouseIsPressed) {
+            gameState = "loadScreen";
+        }
+        drawButton("?", 327, 10, 60, 5, 50);
+        if (overButton && mouseIsPressed) {
+            gameState = "?";
+        }
+    }
+    time++;
+    if (gameState === "Play") {
+        background(0);
+        staticRGB();
+        typewriter("Hello, agent Mikhail Surnov. Today you will be going on a mission. It's your job to break in and steal the items listed on the \"?\" poster.\n\nWe're going to deploy you near the bank,\nKACoins. The best agent gear will be given\nto you.\n\nThe catch? You can't spill one drop of blood.\nThis has to be secretive and silent. Now go.");
+       
+        drawButton("Start", 238, 337, 150, 5, 50);
+        if (overButton && mouseIsPressed) {
+            gameState = "Start";
+        }
+        time++;
+    }
+
+    if (gameState === "Start") {
+        background(255, 255, 255);
+        map1();
+    }
+    if (gameState === "loadScreen") {
+        background(0);
+        staticRGB();
+
+        textSize(40);
+        fill(255, 255, 255);
+        text("Enter your code in the", 201, 72);
+
+        fill(161, 161, 161);
+        rect(47, 99, 300, 40);
+
+        textSize(30);
+        fill(255, 255, 255);
+        text("var saveCode = \"\";", 201, 118);
+
+        text("Developers ONLY.\nI know you're probably going\nto check the program code\nfor the secret, but don't\ntamper too much with the\ncode.", 201, 247);
+
+        drawButton("Menu", 238, 342, 150, 5, 50);
+        if (overButton && mouseIsPressed) {
+            gameState = "Menu";
+        }
+    }
+
+    if (gameState === "?") {
+        background(0);
+        staticRGB();
+
+        fill(255, 255, 255);
+        textSize(20);
+        text("You're probably wondering how to play.\n\n\nWell, here's the basic idea.\nYou are going inside the world's most\nheavily guarded bank. A mob boss has\nassigned you to sneak inside and steal\nthe 5 Gutenberg bibles, the Doctor's Sonic\nScrewdriver (hint hint DW fans) and 150\nmillion dollars.\n\nYou will be given the most top gear of all\ntime for this mission. The catch? You cannot\nhave a single drop of blood on the floor.\nGood luck! (mutters: you'll need it..)", 201, 189);
+
+        drawButton("Menu", 238, 342, 150, 5, 50);
+        if (overButton && mouseIsPressed) {
+            gameState = "Menu";
+        }
+    }
+
+    if (saveCode === "\x64\x65\x76\x65\x6c\x6f\x70\x65\x72\x73") {
+        fill(255, 255, 255);
+        text("" + mouseX + "" + mouseY, mouseX, mouseY);
+        text("mouseX: " + mouseX + " mouseY: " + mouseY, 175, 30);
+        text("FPS: undefined", 108, 60);
+
+        currentLvL = 50;
+        charLevel = 128;
+        perksToSpend = 999;
+
+        charProgress = maxx;
+        cursor(CROSS);
+    } else {
+        cursor(ARROW);
+    }
+
+};
