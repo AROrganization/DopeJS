@@ -1,0 +1,204 @@
+// by alex T
+
+var grappleHookUnlocked = false;
+var distracterUnlocked = false;
+var smokeBombUnlocked = false;
+var duplicatorUnlocked = false;
+var escapeJetpackUnlocked = false;
+var camImgUnlocked = false;
+
+var atomicBombUnlocked = false;
+var developerEditing = false;
+
+var noItemzUnlocked = true;
+
+var overBttn;
+var state = "Menu";
+var bttnPressed = false;
+var Button = function(x, y, w, h, r, ts, t, displayed) {
+    overBttn = false;
+    stroke(43, 43, 43);
+    strokeWeight(2);
+    rectMode(CENTER);
+    fill((mouseX < x + w / 2 && mouseX > x - w / 2 && mouseY < y + h / 2 && mouseY > y - h / 2) ? cursor(HAND) || 255 : color(255, 0));
+    rect(x, y, w, h, r);
+    fill(97, 97, 97);
+    textAlign(CENTER, CENTER);
+    textFont(createFont("Tahoma"));
+    textSize(ts);
+    text(t, x, y);
+    if (mouseX < x + w / 2 && mouseX > x - w / 2 && mouseY < y + h / 2 && mouseY > y - h / 2) {
+        fill(255);
+        textAlign(BASELINE, BASELINE);
+        textSize(20);
+        text(displayed, 10, 20, 390, 400);
+        overBttn = true;
+    }
+};
+var map1 = function() {
+    if (state === "Menu") {
+        rectMode(BASELINE);
+        background(36, 36, 36);
+        fill(64, 64, 64);
+        stroke(0);
+        noStroke();
+        //bank
+        rect(25, 25, 50, 50);
+        rect(23, 36, 2, 10);
+        rect(30, 23, 10, 2);
+        rect(75, 40, 3, 20);
+        //HQ
+        rect(320, 320, 75, 75);
+        rect(317, 330, 3, 20);
+        //Artillery Store
+        rect(330, 10, 60, 40);
+        rect(368, 50, 10, 2);
+        //Police Station
+        rect(104, 125, 50, 50);
+        rect(154, 130, 2, 15);
+        rect(154, 155, 2, 15);
+        stroke(0);
+        //The fountain
+        ellipse(240, 150, 50, 50);
+        ellipse(240, 150, 40, 40);
+        ellipse(240, 150, 5, 5);
+        noStroke();
+        //School
+        rect(5, 140, 50, 100);
+        rect(63, 150, 20, 80);
+        stroke(0);
+        for (var X = 63; X < 78; X += 12) {
+            for (var Y = 150; Y < 230; Y += 5) {
+                rect(X, Y, 8, 5);
+            }
+        }
+        noStroke();
+        rect(55, 180, 2, 20);
+        //Park
+        rect(110, 10, 170, 55);
+        rect(130, 70, 130, 20);
+        stroke(0);
+        for (var X = 130; X < 260; X += 5) {
+            for (var Y = 70; Y < 90; Y += 12) {
+                rect(X, Y, 5, 8);
+            }
+        }
+        noStroke();
+        //Library
+        rect(330, 70, 50, 80);
+        rect(328, 90, 2, 20);
+        //Statues
+        rect(335, 160, 40, 20);
+        rect(165, 130, 19, 40);
+        for (var X = 165; X < 185; X += 11) {
+            for (var Y = 130; Y < 170; Y += 5) {
+                rect(X, Y, 8, 5);
+            }
+        }
+        //Hospital
+        rect(20, 305, 50, 75);
+        rect(70, 325, 2, 30);
+        //Walmart
+        rect(320, 210, 60, 80);
+        rect(318, 220, 2, 20);
+        rect(318, 260, 2, 20);
+        //Hotel
+        rect(210, 210, 60, 50);
+        rect(230, 260, 20, 2);
+        //Town Hall
+        rect(210, 280, 60, 90);
+        rect(208, 300, 2, 20);
+        rect(270, 300, 2, 20);
+        //Church
+        rect(110, 210, 65, 60);
+        rect(130, 270, 30, 2);
+        //Warehouse
+        rect(115, 290, 65, 90);
+        rect(113, 310, 2, 20);
+        rect(180, 340, 2, 20);
+        //road
+        rect(90, -1, 5, 400);
+        rect(-1, 99, 291, 5);
+        rect(290, -1, 5, 401);
+        rect(90, 195, 400, 5);
+        rect(-1, 280, 96, 5);
+        rect(90, 394, 205, 5);
+        rect(188, 200, 5, 200);
+        textAlign(CENTER, CENTER);
+        fill(0);
+        textFont(createFont("Tahoma"));
+        Button(50, 50, 47, 25, 5, 12, "B A N K", "Your quest starts here, at KACOINS!");
+        Button(30, 190, 30, 90, 10, 12, "S\nC\nH\nO\nO\nL");
+        Button(240, 235, 59, 20, 5, 12, "H O T E L");
+        Button(144, 240, 66, 20, 5, 11, "C H U R C H");
+        Button(195, 40, 60, 23, 7, 14, "P A R K");
+        Button(360, 360, 40, 30, 5, 15, "H Q", "This is where Boss assigned you the job. Do it correctly!");
+        Button(360, 30, 60, 20, 5, 7, "A R T I L L E R Y\nS T O R E", "Artillery Store. You unlock tools and weapons as you go!");
+        if (overBttn && mouseIsPressed) {
+            state = "ArtilleryStore";
+        }
+        
+        Button(129.5, 150, 48, 24, 5, 7, "P O L I C E\nS T A T I O N", "If you're caught, you obviously go here.. There's a bonus level here for escaping.");
+        Button(356, 170, 40, 15, 5, 7, "S T A T U E");
+        Button(45, 344, 15, 70, 5, 7, "H\nO\nS\nP\nI\nT\nA\nL");
+        Button(149, 336, 15, 85, 5, 7.5, "W\nA\nR\nE\nH\nO\nU\nS\nE");
+        Button(242, 325, 15, 85, 5, 7.5, "T\nO\nW\nN\n\nH\nA\nL\nL");
+        Button(356, 110, 15, 75, 5, 8, "L\nI\nB\nR\nA\nR\nY");
+        Button(240, 115, 80, 15, 5, 9, "F O U N T A I N", "The exit. While in the shafts of KACoins, your exit will be located somewhere near here.");
+        Button(350, 252, 15, 80, 5, 9, "W\nA\nL\nM\nA\nR\nT");
+    }
+    if (state === "ArtilleryStore") {
+        rectMode(LEFT);
+        background(102, 214, 255);
+        textAlign(CENTER, CENTER);
+
+        textSize(50);
+        text("ARMORY", 201, 30);
+
+        textSize(30);
+        text("Gear up!", 201, 65);
+
+        stroke(0, 0, 0);
+        strokeWeight(3);
+        fill(186, 186, 186);
+        rect(-2, 304, 418, 94);
+
+        textSize(15);
+        fill(255, 255, 255);
+        textAlign(TOP, LEFT);
+        text("This is merely a tutorial test. Weapons / items can be\nunlocked time to time after completing levels. You will find\nthese items in your inventory, after beating such levels. ", 3, 329);
+
+        rect(0, 103, 402, 2);
+        rect(0, 286, 402, 2);
+        for (var j = 0; j < 14; j++) {
+            for (var i = 0; i < 12; i++) {
+                fill(145, 145, 145);
+                noStroke();
+                pushMatrix();
+                translate(0, 107);
+                rect(i * 33, j * 13, 104, 9);
+                popMatrix();
+            }
+        }
+
+        fill(0);
+        textSize(100);
+        text("\u2694", 5, 83);
+        text("\u2620", 303, 83);
+
+        textAlign(CENTER, CENTER);
+        if (noItemzUnlocked === true) {
+            textSize(200);
+            text("?", 201, 188);
+        }
+        
+        Button(332, 373, 107, 35, 5, 24.3, "BACK");
+        if(overBttn && mouseIsPressed){
+            state = "Menu";
+        }
+    }
+
+};
+var draw = function() {
+    map1();
+};
