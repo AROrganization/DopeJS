@@ -1,0 +1,68 @@
+// Thanks to @Alexander T for the button code, I modified a bit.
+// Once again, not copied from Indie.
+var overbuttonF,
+    page = "Menu", 
+    buttonFPressed = false,
+    buttonF = function(x, y, w, h, r, ts, t, displayed) {
+    overbuttonF = false;
+    stroke(0, 0, 0);
+    strokeWeight(3);
+    rectMode(CENTER);
+    fill((mouseX < x + w / 2 && mouseX > x - w / 2 && mouseY < y + h / 2 && mouseY > y - h / 2) ? cursor(HAND) || 255 : color(255, 0));
+    rect(x, y, w, h, r);
+    fill(0, 0, 0);
+    textAlign(CENTER, CENTER);
+    textFont(createFont("Tahoma"));
+    textSize(ts);
+    text(t, x, y);
+    if (mouseX < x + w / 2 && mouseX > x - w / 2 && mouseY < y + h / 2 && mouseY > y - h / 2) {
+        fill(255, 255, 255);
+        textAlign(BASELINE, BASELINE);
+        textSize(20);
+        text(displayed, 10, 20, 390, 400);
+        overbuttonF = true;
+    }
+};
+
+draw = function() {
+    if(page === "Menu"){
+        background(112, 112, 112);
+        
+        textAlign(CENTER, CENTER);
+        textFont(createFont("Calibri Bold"));
+        textSize(50);
+        
+        fill(255, 255, 255);
+        text("Button Function", 201, 50);
+        
+        textSize(20);
+        fill(255, 0, 0);
+        text("Page 1", 201, 98);
+        
+        buttonF(201, 188, 142, 58, 5, 30, "Next Page", "Go to the next page");
+        if (overbuttonF && mouseIsPressed) {
+            page = "Menu2";
+        }
+        
+    }
+    
+    if(page === "Menu2"){
+        background(112, 112, 112);
+        
+        textAlign(CENTER, CENTER);
+        textFont(createFont("Calibri Bold"));
+        textSize(50);
+        
+        fill(255, 255, 255);
+        text("Button Function", 201, 50);
+        
+        textSize(20);
+        fill(0, 255, 0);
+        text("Page 2", 201, 98);
+        
+        buttonF(201, 265, 204, 58, 5, 30, "Previous Page", "Go to the previous page");
+        if (overbuttonF && mouseIsPressed) {
+            page = "Menu";
+        }
+    }
+};
