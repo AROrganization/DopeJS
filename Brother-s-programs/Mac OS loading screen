@@ -1,0 +1,43 @@
+var l = 301,
+    time = 10,
+    l1 = 1;
+draw = function() {
+    background(0, 0, 0);
+    textFont(createFont(" Bold"));
+    
+    time+=1;
+    
+    noFill();
+    stroke(0, 64, 255);
+    strokeWeight(5);
+    arc(200, 180, 100, 100, l, 300);
+    
+    l--;
+    
+    textAlign(CENTER, CENTER);
+    fill(255, 255, 255);
+    textSize(15);
+    text("Macintosh\nOS", 201, 182);
+    
+    text("This is not a fake loading screen.", 201, 30);
+    
+    fill(245, 245, 245, 100);
+    
+    noStroke();
+    rect(81, 247, 244, 4);
+    
+    fill(255, 255, 255, 150);
+    rect(81, 247, l1, 4);
+    
+    l1+=0.8;
+    
+    if(l1 >= 245){
+        l1 = 245;
+    }
+    
+    if(time >= 350 && l1 === 245){ // 400 // 350 && l1 === 224
+        background(255, 0, 0);
+    }
+    
+    
+};
