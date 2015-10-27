@@ -1,0 +1,12 @@
+// Bouncing ball
+
+
+draw = function() {
+    background(255, 255, 255);
+    noStroke();
+    fill(0, 0, 0);
+    ellipse(mouseX, 200 + abs(sq(frameCount % 50 - 25)) * 0.2, 30, 30);
+    
+    fill(163, 163, 163);
+    rect(0, 335, 400, 77);
+};
