@@ -1,0 +1,100 @@
+// This was not copied from Indie. I made the original. DillingerLee helped with the collision, I made the detection.
+
+var keys = [];
+keyPressed = function() {
+    keys[keyCode] = true;
+};
+keyReleased = function() {
+    delete keys[keyCode];
+};
+
+var Block = function(x, y, w, h) {
+    this.x = x;
+    this.y = y;
+    this.width = w;
+    this.height = h;
+
+    this.draw = function() {
+        fill(130);
+        rect(this.x, this.y, this.width, this.height);
+    };
+};
+// Define collideWith Function
+var collideWith = function(object1, object2) {
+    return (object1.x + object1.width > object2.x &&
+        object1.x + 1 < object2.x + object2.width &&
+        object1.y + object1.height > object2.y &&
+        object1.y < object2.y + object2.height);
+};
+
+var blocks = [new Block(200, 175, 40, 40), new Block(300, 200, 40, 40)];
+
+// Define Player
+var Player = function(x, y, w, h) {
+    this.x = x;
+    this.y = y;
+    this.width = w;
+    this.height = h;
+    this.speed = 2.5;
+
+    this.update = function() {
+        if (keys[RIGHT]) {
+            this.x += this.speed;
+        }
+        if (keys[LEFT]) {
+            this.x -= this.speed;
+        }
+
+        for (var each in blocks) {
+            if (collideWith(this, blocks[each])) {
+                if (keys[RIGHT]) {
+                    this.x -= this.speed;
+                }
+                if (keys[LEFT]) {
+                    this.x += this.speed;
+                }
+                break; // Collision was found. No need to continue checking
+            }
+        }
+
+        if (keys[UP]) {
+            this.y -= this.speed;
+        }
+        if (keys[DOWN]) {
+            this.y += this.speed;
+        }
+
+        for (var each in blocks) {
+            if (collideWith(this, blocks[each])) {
+                if (keys[UP]) {
+                    this.y += this.speed;
+                }
+                if (keys[DOWN]) {
+                    this.y -= this.speed;
+                }
+                break;
+            }
+        }
+    };
+
+    this.draw = function() {
+        fill(255, 0, 0);
+        rect(this.x, this.y, this.width, this.height);
+    };
+};
+
+// Create a new Instance of the Player Object
+var player = new Player(267, 140, 40, 40);
+noStroke();
+
+draw = function() {
+    background(255, 255, 255);
+
+    player.update();
+    player.draw();
+
+    for (var each in blocks) {
+        blocks[each].draw();
+    }
+
+};
