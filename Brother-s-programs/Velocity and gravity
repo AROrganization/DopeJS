@@ -1,0 +1,63 @@
+// I'm experimenting with velocity and gravity.
+
+var Player = function(x, y, z, r, w, h) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.z = z;
+    this.r = r;
+    
+    this.draw = function() {
+        fill(255, 255, 255);
+        strokeWeight(1);
+        
+        ellipse(this.x, this.y, this.w, this.h);
+    };
+};
+
+var ball = new Player(200, 200, 100, 30, 20, 20);
+    ball.xv = 0;
+    ball.yv = 0;
+    ball.zv = 0;
+    
+    
+var keys = [];
+keyPressed = function() {
+    keys[keyCode] = true;
+};
+keyReleased = function() {
+    keys[keyCode] = false;
+};
+
+
+draw = function() {
+    noStroke();
+    fill(143, 143, 143, 100);
+    rect(0, 0, 400, 400);
+
+    ball.x += ball.xv;
+    ball.y += ball.yv;
+    ball.z += ball.zv;
+    ball.zv += 0.3; // gravity
+    if (ball.z < ball.r/2) {
+        ball.z = ball.r/2;
+        ball.zv = 0;
+    }
+    if (keys[LEFT]) {
+        ball.xv -= 1.7;
+    }
+    if (keys[RIGHT]) {
+        ball.xv += 1.7;
+    }
+    if (keys[UP]) {
+        ball.yv -= 1.7;
+    }
+    if (keys[DOWN]) {
+        ball.yv += 1.7;
+    }
+    ball.xv *= 0.90;
+    ball.yv *= 0.90;
+    
+    ball.draw();
+};
